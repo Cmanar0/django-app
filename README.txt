@@ -23,3 +23,6 @@ run server:  -------  python manage.py runserver
 
 create the default tables in your database (SQLite by default): ------- python manage.py migrate
  
+
+Anytime you install or remove a Python package in your local environment run ------- pip freeze > requirements.txt
+(The Dockerfile (or any deploy system) uses requirements.txt to know what packages to install.)
