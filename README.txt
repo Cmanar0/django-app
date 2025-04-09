@@ -21,8 +21,16 @@ crete the main core app: ------- python manage.py startapp core
 
 run server:  -------  python manage.py runserver
 
+
 create the default tables in your database (SQLite by default): ------- python manage.py migrate
  
 
 Anytime you install or remove a Python package in your local environment run ------- pip freeze > requirements.txt
 (The Dockerfile (or any deploy system) uses requirements.txt to know what packages to install.)
+Tip: Make it a habit
+# Anytime you install a new dependency:
+pip install somepackage
+pip freeze > requirements.txt
+git add requirements.txt
+
+
