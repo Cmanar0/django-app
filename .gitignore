@@ -1,0 +1,56 @@
+# Virtual environment
+.venv/
+venv/
+
+# Python compiled files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment variables
+.env
+
+# Django migrations (Keep initial migrations, ignore unnecessary cache)
+**/migrations/**  # Ignore all migration folders
+!**/migrations/__init__.py  # But keep the __init__.py file
+
+# Static and media files
+/static/
+/media/
+
+# Logs
+logs/
+*.log
+*.out
+*.err
+
+# IDE and editor-specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Coverage and testing reports
+htmlcov/
+.coverage
+*.cover
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.mo
+*.pot
+
+# Compiled C extensions
+*.so
+
+# macOS system files
+.DS_Store
+
+# ignore sqlite, sqlite temp files, potentiall backups
+*.sqlite3
+*.sqlite3-journal
+*.bak
+
+# Ignore local-only Docker overrides
+docker-compose.override.yml
