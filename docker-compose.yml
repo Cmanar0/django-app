@@ -33,5 +33,5 @@ services:
       context: ../maishagala-fe
     container_name: maishagala_fe
     ports:
-      - "3000:3000"
+      - "3000:80" # <-- Expose port 80 internally for reverse proxy
     restart: always
