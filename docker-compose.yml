@@ -7,8 +7,8 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
-      - ../static:/app/static                    # persistent static files
-      - ../media:/app/media                      # persistent media files
+      - ../static:/app/static                    
+      - ../media:/app/media                     
     ports:
       - "8000:8000"
     env_file:
@@ -35,6 +35,3 @@ services:
     ports:
       - "3000:80"
     restart: always
-
-volumes:
-  # optional if you want named volumes instead of host paths
