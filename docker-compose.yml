@@ -1,26 +1,40 @@
 version: '3.9'
 
 services:
-  web:
+  backend:
     build: .
+    container_name: django_backend
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
+      - ../static:/app/static                    # persistent static files
+      - ../media:/app/media                      # persistent media files
     ports:
       - "8000:8000"
     env_file:
       - .env
     depends_on:
       - postgres
+    restart: always
 
   postgres:
     image: postgres:15
+    container_name: postgres_db
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ../postgres-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    restart: always
+
+  frontend:
+    build:
+      context: ../maishagala-fe
+    container_name: maishagala_fe
+    ports:
+      - "3000:80"
+    restart: always
 
 volumes:
-  postgres_data:
+  # optional if you want named volumes instead of host paths

@@ -61,7 +61,27 @@ python manage.py createsuperuser
 
 ----------------------------------------   DEPLOYMENT (LINODE VPS + DOCKER) ----------------------------------------
 
-cd /docker/testing-Django-Docker/  
-git pull  
-docker compose down  
-docker compose up -d --build  
+# Folder structure on the server:
+/srv/
+├── django-app/                # Your Django source code (cloned from GitHub)
+│   ├── Dockerfile
+│   ├── docker-compose.yml
+│   ├── .env
+│   ├── requirements.txt
+│   └── your_project/
+│       └── ...
+├── postgres-data/             # PostgreSQL persistent data volume (outside container)
+├── static/                    # (Optional) For collected static files if needed outside container
+├── media/                     # (Optional) For uploaded media files
+├── caddy/
+│   ├── Caddyfile              # Caddy config for reverse proxy
+│   └── certs/                 # Optional folder for certs (Caddy usually manages this itself)
+
+
+# Deployment commands:
+
+cd /srv/django-app/
+git pull
+docker compose down (optional)
+docker-compose up -d --build
+
