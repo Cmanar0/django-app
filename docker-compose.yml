@@ -7,8 +7,8 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
-      - ../static:/app/static                    
-      - ../media:/app/media                     
+      - static_volume:/app/static
+      - media_volume:/app/media
     ports:
       - "8000:8000"
     env_file:
@@ -21,17 +21,32 @@ services:
     image: postgres:15
     container_name: postgres_db
     volumes:
-      - ../postgres-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     restart: always
 
-  frontend:
-    build:
-      context: ../maishagala-fe
-    container_name: maishagala_fe
+  caddy:
+    image: caddy:alpine
+    container_name: caddy_server
     ports:
-      - "3000:3000" # <-- Expose port 80 internally for reverse proxy
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+      - static_volume:/static
+      - media_volume:/media
+    depends_on:
+      - backend
     restart: always
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:
+  caddy_data:
+  caddy_config:

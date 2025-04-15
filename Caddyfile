@@ -1,0 +1,21 @@
+maishagala.com {
+    # Enable compression
+    encode gzip
+
+    # Serve static files
+    handle /static/* {
+        root * /static
+        file_server
+    }
+
+    # Serve media files
+    handle /media/* {
+        root * /media
+        file_server
+    }
+
+    # Reverse proxy to Django
+    handle {
+        reverse_proxy django_backend:8000
+    }
+} 
