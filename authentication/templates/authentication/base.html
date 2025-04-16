@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Authentication{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--secondary-color);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .auth-logo {
+            margin-bottom: 1rem;
+        }
+
+        .auth-logo img {
+            height: 60px;
+            transition: transform 0.3s ease;
+        }
+
+        .auth-logo img:hover {
+            transform: scale(1.05);
+        }
+
+        .auth-text h1 {
+            color: var(--primary-color);
+            font-size: 1.6rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .auth-text p {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 0;
+            line-height: 1.4;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <div class="auth-logo">
+                <img src="{% static 'core/images/logo.png' %}" alt="Logo">
+            </div>
+            <div class="auth-text">
+                <h1>{% block header %}{% endblock %}</h1>
+                <p>{% block subheader %}{% endblock %}</p>
+            </div>
+        </div>
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html> 
