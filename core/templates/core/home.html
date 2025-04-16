@@ -1,44 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home Page</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-        }
-        .welcome-section {
-            text-align: center;
-            margin-top: 2rem;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>My Django Website</h1>
-    </header>
-    
-    <div class="container">
-        <div class="welcome-section">
-            <h2>Welcome to Our Site</h2>
-            <p>This is a simple home page template for your Django project.</p>
-            <p>Feel free to customize it according to your needs!</p>
-        </div>
-    </div>
-</body>
-</html>
+{% extends 'core/base.html' %}
+
+{% block title %}Home - My Django Website{% endblock %}
+
+{% block header %}Maisha Gala{% endblock %}
+
+{% block content %}
+<div class="welcome-section">
+    <h2>Welcome to Our Site</h2>
+    <p>This is a simple home page template for your Django project.</p>
+    <p>Feel free to customize it according to your needs!</p>
+</div>
+{% endblock %}

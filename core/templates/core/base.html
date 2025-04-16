@@ -4,75 +4,65 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Django Site{% endblock %}</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 80%;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        header {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-        }
-        nav {
-            background-color: #f4f4f4;
-            padding: 1rem;
-        }
-        nav ul {
-            list-style-type: none;
-            padding: 0;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
-        nav ul li {
-            margin: 0 15px;
-        }
-        nav ul li a {
-            text-decoration: none;
-            color: #333;
-        }
-        footer {
-            background-color: #333;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-    </style>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     <header>
-        <h1>{% block header %}My Django Website{% endblock %}</h1>
+        <nav class="navbar">
+            <div class="logo">
+                <img src="{% static 'core/images/logo.png' %}" alt="Logo">
+                <span class="logo-text">{% block header %}{% endblock %}</span>
+            </div>
+            
+            <button class="hamburger" aria-label="Menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <ul class="nav-links">
+                <li><a href="{% url 'core:home' %}">Home</a></li>
+                <li><a href="#">About</a></li>
+                <li><a href="#">Services</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
     </header>
-    
-    <nav>
-        <ul>
-            <li><a href="{% url 'home' %}">Home</a></li>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Contact</a></li>
-        </ul>
-    </nav>
-    
-    <div class="container">
-        {% block content %}
-        {% endblock %}
-    </div>
+
+    <main>
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
     
     <footer>
-        <p>&copy; {% now "Y" %} My Django Website. All rights reserved.</p>
+        <div class="footer">
+            <p>&copy; {% now "Y" %} MaishaGala. All rights reserved.</p>
+        </div>
     </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            
+            hamburger.addEventListener('click', function() {
+                hamburger.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!hamburger.contains(event.target) && !navLinks.contains(event.target)) {
+                    hamburger.classList.remove('active');
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+    </script>
     
     {% block extra_js %}{% endblock %}
 </body>
