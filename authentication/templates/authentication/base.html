@@ -35,6 +35,11 @@
             margin-bottom: 1rem;
         }
 
+        .auth-logo a {
+            display: inline-block;
+            text-decoration: none;
+        }
+
         .auth-logo img {
             height: 60px;
             transition: transform 0.3s ease;
@@ -64,7 +69,9 @@
     <div class="auth-container">
         <div class="auth-header">
             <div class="auth-logo">
-                <img src="{% static 'core/images/logo.png' %}" alt="Logo">
+                <a href="{% url 'core:home' %}">
+                    <img src="{% static 'core/images/logo.png' %}" alt="Logo">
+                </a>
             </div>
             <div class="auth-text">
                 <h1>{% block header %}{% endblock %}</h1>
