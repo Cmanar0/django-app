@@ -6,8 +6,17 @@ class StaffAccessMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        if request.path.startswith('/community-hub/'):
-            user = request.user
+        path = request.path
+        user = request.user
+
+        # 🔒 Block non-staff from community hub
+        if path.startswith('/community-hub/'):
             if not user.is_authenticated or not (user.is_staff or user.is_superuser):
-                return redirect(reverse('auth:login'))  # ✅ Use namespace + name
+                return redirect(reverse('auth:login'))
+
+        # 🔒 Block staff/superuser from dashboard
+        if path.startswith('/dashboard/'):
+            if user.is_authenticated and (user.is_staff or user.is_superuser):
+                return redirect(reverse('community_hub:home'))
+
         return self.get_response(request)
