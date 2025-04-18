@@ -22,4 +22,5 @@ urlpatterns = [
     path('', include('core.urls')),
     path('auth/', include('authentication.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('community-hub/', include('community_hub.urls')),
 ]

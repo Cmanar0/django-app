@@ -9,15 +9,17 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
-        
+
         user = authenticate(request, username=username, password=password)
-        
+
         if user is not None:
             login(request, user)
+            if user.is_superuser or user.is_staff:
+                return redirect('community_hub:home')
             return redirect('dashboard:home')
         else:
             return render(request, 'authentication/login.html', {'error': 'Invalid username or password'})
-    
+
     return render(request, 'authentication/login.html')
 
 def register_view(request):
