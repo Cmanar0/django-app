@@ -22,33 +22,34 @@ def login_view(request):
 
     return render(request, 'authentication/login.html')
 
+from django.contrib.auth.models import User, Group  # ✅ include Group
+
 def register_view(request):
     if request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
-        
-        # Check if passwords match
+
         if password != confirm_password:
             return render(request, 'authentication/register.html', {'error': 'Passwords do not match'})
-        
-        # Use email as username
+
         username = email
-        
-        # Check if username (email) already exists
-        if User.objects.filter(username=username).exists():
+
+        if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
             return render(request, 'authentication/register.html', {'error': 'Email already exists'})
-        
-        # Check if email already exists
-        if User.objects.filter(email=email).exists():
-            return render(request, 'authentication/register.html', {'error': 'Email already exists'})
-        
-        # Create new user
+
+        # Create user
         user = User.objects.create_user(username=username, email=email, password=password)
+
+        # ✅ Assign "member" group
+        group, created = Group.objects.get_or_create(name='member')
+        user.groups.add(group)
+
         login(request, user)
         return redirect('dashboard:home')
-    
+
     return render(request, 'authentication/register.html')
+
 
 def logout_view(request):
     logout(request)
