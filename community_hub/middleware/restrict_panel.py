@@ -9,5 +9,5 @@ class StaffAccessMiddleware:
         if request.path.startswith('/community-hub/'):
             user = request.user
             if not user.is_authenticated or not (user.is_staff or user.is_superuser):
-                return redirect(reverse('login'))
+                return redirect(reverse('auth:login'))  # ✅ Use namespace + name
         return self.get_response(request)
