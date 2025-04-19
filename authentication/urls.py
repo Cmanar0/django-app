@@ -24,4 +24,5 @@ urlpatterns = [
     path('reset/done/', auth_views.PasswordResetCompleteView.as_view(
         template_name='authentication/password_reset_complete.html'
     ), name='password_reset_complete'),
+    path('verify-email/<uidb64>/<token>/', views.verify_email, name='verify_email'),
 ]
