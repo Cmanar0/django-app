@@ -96,6 +96,8 @@
     {% endif %}
 </form>
 <div class="register-link">
-    <p>Don't have an account? <a href="{% url 'auth:register' %}">Register here</a></p>
+  <p><a href="{% url 'auth:password_reset' %}">Forgot your password?</a></p>
+  <p>Don't have an account? <a href="{% url 'auth:register' %}">Register here</a></p>
 </div>
+
 {% endblock %} 

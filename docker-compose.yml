@@ -38,8 +38,8 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
-      - static_volume:/static
-      - media_volume:/media
+      - static_volume:/srv/static
+      - media_volume:/srv/media
     depends_on:
       - backend
     restart: always

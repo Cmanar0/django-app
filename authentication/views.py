@@ -9,6 +9,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
+from services.email_service import send_verification_email
 
 
 # ================= LOGIN VIEW =================
@@ -52,39 +53,22 @@ def register_view(request):
         if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
             return render(request, 'authentication/register.html', {'error': 'Email already exists'})
 
-        # Create user
+        # ✅ Create user
         user = User.objects.create_user(username=username, email=email, password=password)
         user.is_active = True
         user.save()
 
-        # Set default membership program in profile
-        user_profile = user.userprofile
-        user_profile.membership_program = 'member'
-        user_profile.save()
+        # ✅ Update user profile
+        profile = user.userprofile
+        profile.membership_program = 'member'
+        profile.save()
 
-        # Assign user to "member" group
-        group, created = Group.objects.get_or_create(name='member')
+        # ✅ Assign to 'member' group
+        group, _ = Group.objects.get_or_create(name='member')
         user.groups.add(group)
 
-        # Send verification email
-        uid = urlsafe_base64_encode(force_bytes(user.pk))
-        token = default_token_generator.make_token(user)
-        verification_link = request.build_absolute_uri(
-            reverse('auth:verify_email', kwargs={'uidb64': uid, 'token': token})
-        )
-
-        message = render_to_string('authentication/verify_email.html', {
-            'username': user.username,
-            'verification_link': verification_link,
-        })
-
-        send_mail(
-            subject='Verify your email address',
-            message='',
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[user.email],
-            html_message=message,
-        )
+        # ✅ Send email verification
+        send_verification_email(user, request)
 
         return render(request, 'authentication/registration_pending.html', {'email': user.email})
 
