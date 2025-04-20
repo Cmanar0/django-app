@@ -1,19 +1,16 @@
 maishagala.com {
     encode gzip
 
-    # Serve static files from the correct mount
-    handle_path /static/* {
+    handle /static/* {
         root * /srv
         file_server
     }
 
-    # Serve media files from the correct mount
-    handle_path /media/* {
+    handle /media/* {
         root * /srv
         file_server
     }
 
-    # All other requests go to Django backend
     handle {
         reverse_proxy django_backend:8000
     }
