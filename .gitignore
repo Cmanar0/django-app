@@ -11,9 +11,10 @@ __pycache__/
 # Environment variables
 .env
 
-# Django migrations (Keep initial migrations, ignore unnecessary cache)
-**/migrations/**  # Ignore all migration folders
-!**/migrations/__init__.py  # But keep the __init__.py file
+# Ignore migration cache files, but allow actual migration code
+**/migrations/*.pyc
+**/migrations/__pycache__/
+
 
 # Static and media files
 /static/
