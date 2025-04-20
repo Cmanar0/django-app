@@ -134,6 +134,10 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://maishagala.com",
+    "https://www.maishagala.com",
+]
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
