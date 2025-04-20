@@ -5,9 +5,9 @@ ENV PYTHONUNBUFFERED 1
 
 WORKDIR /app
 
-# Install curl + dependencies and set IPv4 preference
+# Install curl and force IPv4 preference
 RUN apt update && apt install -y curl && \
-    echo 'precedence ::ffff:0:0/96  100' >> /etc/gai.conf
+    echo 'precedence ::ffff:0:0/96  100' > /etc/gai.conf
 
 COPY requirements.txt .
 RUN pip install --upgrade pip
