@@ -1,21 +1,20 @@
 maishagala.com {
-    # Enable compression
     encode gzip
 
-    # Serve static files
-    handle /static/* {
-        root * /static
+    # Serve static files from the correct mount
+    handle_path /static/* {
+        root * /srv
         file_server
     }
 
-    # Serve media files
-    handle /media/* {
-        root * /media
+    # Serve media files from the correct mount
+    handle_path /media/* {
+        root * /srv
         file_server
     }
 
-    # Reverse proxy to Django
+    # All other requests go to Django backend
     handle {
         reverse_proxy django_backend:8000
     }
-} 
+}
