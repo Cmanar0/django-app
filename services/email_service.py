@@ -6,7 +6,8 @@ from django.urls import reverse
 from django.conf import settings
 import os
 
-from sib_api_v3_sdk import ApiClient, Configuration
+from sib_api_v3_sdk.configuration import Configuration
+from sib_api_v3_sdk.api_client import ApiClient
 from sib_api_v3_sdk.api.transactional_emails_api import TransactionalEmailsApi
 from sib_api_v3_sdk.models import SendSmtpEmail
 
@@ -20,18 +21,20 @@ def send_email(subject: str, to_email: str, template_name: str, context: dict):
     configuration = Configuration()
     configuration.api_key['api-key'] = os.environ.get('BREVO_API_KEY')
 
-    with ApiClient(configuration) as api_client:
-        api_instance = TransactionalEmailsApi(api_client)
-        send_smtp_email = SendSmtpEmail(
-            to=[{"email": to_email}],
-            subject=subject,
-            html_content=message_html,
-            sender={"email": os.environ.get("DEFAULT_FROM_EMAIL")}
-        )
-        try:
-            api_instance.send_transac_email(send_smtp_email)
-        except Exception as e:
-            print(f"Error sending email to {to_email}: {e}")
+    api_client = ApiClient(configuration)
+    api_instance = TransactionalEmailsApi(api_client)
+
+    send_smtp_email = SendSmtpEmail(
+        to=[{"email": to_email}],
+        subject=subject,
+        html_content=message_html,
+        sender={"email": os.environ.get("DEFAULT_FROM_EMAIL")}
+    )
+
+    try:
+        api_instance.send_transac_email(send_smtp_email)
+    except Exception as e:
+        print(f"Error sending email to {to_email}: {e}")
 
 
 def send_verification_email(user, request):
