@@ -9,7 +9,8 @@ import os
 from sib_api_v3_sdk.configuration import Configuration
 from sib_api_v3_sdk.api_client import ApiClient
 from sib_api_v3_sdk.api.transactional_emails_api import TransactionalEmailsApi
-from sib_api_v3_sdk.models import SendSmtpEmail
+from sib_api_v3_sdk.api.contacts_api import ContactsApi
+from sib_api_v3_sdk.models import SendSmtpEmail, CreateContact
 
 
 def send_email(subject: str, to_email: str, template_name: str, context: dict):
@@ -88,3 +89,27 @@ def send_password_reset_confirmation_email(user):
         template_name='emails/password_reset_confirmed.html',
         context=context,
     )
+
+
+def add_user_to_brevo_list(email: str, first_name: str = '', last_name: str = '', list_ids: list[int] = [3]):
+    """
+    Adds a user to the Brevo contact list 'Maisha Members' (ID: 3).
+    """
+    configuration = Configuration()
+    configuration.api_key['api-key'] = os.environ.get('BREVO_API_KEY')
+
+    with ApiClient(configuration) as api_client:
+        api_instance = ContactsApi(api_client)
+        contact = CreateContact(
+            email=email,
+            list_ids=list_ids,
+            attributes={
+                "FIRSTNAME": first_name,
+                "LASTNAME": last_name
+            },
+            update_enabled=True
+        )
+        try:
+            api_instance.create_contact(contact)
+        except Exception as e:
+            print(f"Error adding user to Brevo list: {e}")

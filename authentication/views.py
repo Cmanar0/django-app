@@ -10,6 +10,7 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.conf import settings
 from services.email_service import send_verification_email
+from services.email_service import add_user_to_brevo_list
 
 
 # ================= LOGIN VIEW =================
@@ -69,6 +70,9 @@ def register_view(request):
 
         # ✅ Send email verification
         send_verification_email(user, request)
+
+        # Add to Brevo contacts list
+        add_user_to_brevo_list(email=email)
 
         return render(request, 'authentication/registration_pending.html', {'email': user.email})
 
