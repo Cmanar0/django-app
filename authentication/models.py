@@ -19,7 +19,8 @@ class UserProfile(models.Model):
     is_email_verified = models.BooleanField(default=False)
 
     # Basic identity
-    full_name = models.CharField(max_length=255, blank=True)
+    first_name = models.CharField(max_length=255, blank=True)
+    last_name = models.CharField(max_length=255, blank=True)
     company_name = models.CharField(max_length=255, blank=True)
     
     # Contact

@@ -3,7 +3,6 @@ from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.urls import reverse
-from django.conf import settings
 import os
 
 from sib_api_v3_sdk.configuration import Configuration
@@ -14,9 +13,6 @@ from sib_api_v3_sdk.models import SendSmtpEmail, CreateContact
 
 
 def send_email(subject: str, to_email: str, template_name: str, context: dict):
-    """
-    Generic function to send HTML email using a template via Brevo API.
-    """
     message_html = render_to_string(template_name, context)
 
     configuration = Configuration()
@@ -91,10 +87,7 @@ def send_password_reset_confirmation_email(user):
     )
 
 
-def add_user_to_brevo_list(email: str, first_name: str = '', last_name: str = '', list_ids: list[int] = [3]):
-    """
-    Adds a user to the Brevo contact list 'Maisha Members' (ID: 3).
-    """
+def add_user_to_brevo_list(email: str, first_name: str = '', last_name: str = '', company_name: str = '', phone: str = '', membership_program: str = '', payment_type: str = '', list_ids: list[int] = [3]):
     configuration = Configuration()
     configuration.api_key['api-key'] = os.environ.get('BREVO_API_KEY')
 
@@ -105,7 +98,11 @@ def add_user_to_brevo_list(email: str, first_name: str = '', last_name: str = ''
             list_ids=list_ids,
             attributes={
                 "FIRSTNAME": first_name,
-                "LASTNAME": last_name
+                "LASTNAME": last_name,
+                "COMPANY": company_name,
+                "PHONE": phone,
+                "MEMBERSHIP": membership_program,
+                "PAYMENT": payment_type
             },
             update_enabled=True
         )
@@ -113,3 +110,27 @@ def add_user_to_brevo_list(email: str, first_name: str = '', last_name: str = ''
             api_instance.create_contact(contact)
         except Exception as e:
             print(f"Error adding user to Brevo list: {e}")
+
+
+def update_user_in_brevo_list(email: str, first_name: str = '', last_name: str = '', company_name: str = '', phone: str = '', membership_program: str = '', payment_type: str = ''):
+    configuration = Configuration()
+    configuration.api_key['api-key'] = os.environ.get('BREVO_API_KEY')
+
+    with ApiClient(configuration) as api_client:
+        api_instance = ContactsApi(api_client)
+        contact = CreateContact(
+            email=email,
+            attributes={
+                "FIRSTNAME": first_name,
+                "LASTNAME": last_name,
+                "COMPANY": company_name,
+                "PHONE": phone,
+                "MEMBERSHIP": membership_program,
+                "PAYMENT": payment_type
+            },
+            update_enabled=True
+        )
+        try:
+            api_instance.create_contact(contact)
+        except Exception as e:
+            print(f"Error updating Brevo contact: {e}")

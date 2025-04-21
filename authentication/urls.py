@@ -5,6 +5,7 @@ from django.contrib.auth import views as auth_views
 app_name = 'auth'
 
 urlpatterns = [
+    # Auth
     path('login/', views.login_view, name='login'),
     path('register/', views.register_view, name='register'),
     path('logout/', views.logout_view, name='logout'),
@@ -28,4 +29,8 @@ urlpatterns = [
 
     # Email Verification
     path('verify-email/<uidb64>/<token>/', views.verify_email, name='verify_email'),
+
+    # Profile Management
+    path('profile/', views.profile_update_view, name='profile_update'),
+    path('delete-account/', views.delete_account_view, name='delete_account'),
 ]
