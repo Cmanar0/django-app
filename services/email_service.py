@@ -1,25 +1,37 @@
-from django.core.mail import send_mail
-from django.conf import settings
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
 from django.urls import reverse
+from django.conf import settings
+import os
+
+from sib_api_v3_sdk import ApiClient, Configuration
+from sib_api_v3_sdk.api.transactional_emails_api import TransactionalEmailsApi
+from sib_api_v3_sdk.models import SendSmtpEmail
 
 
 def send_email(subject: str, to_email: str, template_name: str, context: dict):
     """
-    Generic function to send HTML email using a template.
+    Generic function to send HTML email using a template via Brevo API.
     """
-    message = render_to_string(template_name, context)
+    message_html = render_to_string(template_name, context)
 
-    send_mail(
-        subject=subject,
-        message='',  # leave empty if using html_message
-        from_email=settings.DEFAULT_FROM_EMAIL,
-        recipient_list=[to_email],
-        html_message=message,
-    )
+    configuration = Configuration()
+    configuration.api_key['api-key'] = os.environ.get('BREVO_API_KEY')
+
+    with ApiClient(configuration) as api_client:
+        api_instance = TransactionalEmailsApi(api_client)
+        send_smtp_email = SendSmtpEmail(
+            to=[{"email": to_email}],
+            subject=subject,
+            html_content=message_html,
+            sender={"email": os.environ.get("DEFAULT_FROM_EMAIL")}
+        )
+        try:
+            api_instance.send_transac_email(send_smtp_email)
+        except Exception as e:
+            print(f"Error sending email to {to_email}: {e}")
 
 
 def send_verification_email(user, request):
