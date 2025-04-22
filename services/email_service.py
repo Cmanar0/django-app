@@ -87,7 +87,16 @@ def send_password_reset_confirmation_email(user):
     )
 
 
-def add_user_to_brevo_list(email: str, first_name: str = '', last_name: str = '', company_name: str = '', phone: str = '', membership_program: str = '', payment_type: str = '', list_ids: list[int] = [3]):
+def add_user_to_brevo_list(
+    email: str,
+    first_name: str = '',
+    last_name: str = '',
+    company_name: str = '',
+    phone: str = '',
+    membership_program: str = '',
+    payment_type: str = '',
+    list_ids: list[int] = [3]
+):
     configuration = Configuration()
     configuration.api_key['api-key'] = os.environ.get('BREVO_API_KEY')
 
@@ -103,7 +112,8 @@ def add_user_to_brevo_list(email: str, first_name: str = '', last_name: str = ''
             "COMPANY": company_name,
             "PHONE": phone,
             "MEMBERSHIP": membership_program,
-            "PAYMENT": payment_type
+            "PAYMENT": payment_type,
+            "VERIFIED": False
         },
         update_enabled=True
     )
@@ -114,7 +124,16 @@ def add_user_to_brevo_list(email: str, first_name: str = '', last_name: str = ''
         print(f"Error adding user to Brevo list: {e}")
 
 
-def update_user_in_brevo_list(email: str, first_name: str = '', last_name: str = '', company_name: str = '', phone: str = '', membership_program: str = '', payment_type: str = ''):
+def update_user_in_brevo_list(
+    email: str,
+    first_name: str = '',
+    last_name: str = '',
+    company_name: str = '',
+    phone: str = '',
+    membership_program: str = '',
+    payment_type: str = '',
+    verified: bool = False
+):
     configuration = Configuration()
     configuration.api_key['api-key'] = os.environ.get('BREVO_API_KEY')
 
@@ -129,7 +148,8 @@ def update_user_in_brevo_list(email: str, first_name: str = '', last_name: str =
             "COMPANY": company_name,
             "PHONE": phone,
             "MEMBERSHIP": membership_program,
-            "PAYMENT": payment_type
+            "PAYMENT": payment_type,
+            "VERIFIED": verified
         },
         update_enabled=True
     )

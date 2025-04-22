@@ -1,0 +1,21 @@
+{% extends 'authentication/base.html' %}
+
+{% block title %}Terms & Privacy Policy - MaishaGala{% endblock %}
+
+{% block header %}Terms & Privacy Policy{% endblock %}
+
+{% block subheader %}Please read this information carefully.{% endblock %}
+
+{% block content %}
+<div style="line-height: 1.6">
+    <p>Welcome to MaishaGala. By registering, you agree to the following terms:</p>
+    <ul>
+        <li>Your data will be securely stored and never shared without your consent.</li>
+        <li>You will receive important communications about your account and our events.</li>
+        <li>You can request deletion of your account and data at any time.</li>
+    </ul>
+    <p><strong>Privacy Policy:</strong> We only collect data necessary to provide our services and keep you informed about MaishaGala activities. Your data will not be sold or misused.</p>
+
+    <a href="{% url 'auth:register' %}" style="display: inline-block; margin-top: 1.5rem; padding: 0.6rem 1.2rem; background-color: var(--primary-color); color: white; text-decoration: none; border-radius: 4px;">← Back to Registration</a>
+</div>
+{% endblock %}

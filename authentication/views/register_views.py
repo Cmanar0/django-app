@@ -8,33 +8,29 @@ def register_view(request):
         email = request.POST.get('email')
         password = request.POST.get('password')
         confirm_password = request.POST.get('confirm_password')
+        agreed = request.POST.get('agree_policy')
+
+        if not agreed:
+            return render(request, 'authentication/register.html', {'error': 'You must agree to the terms and privacy policy.'})
 
         if password != confirm_password:
             return render(request, 'authentication/register.html', {'error': 'Passwords do not match'})
 
-        username = email
-
-        if User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists():
+        if User.objects.filter(username=email).exists() or User.objects.filter(email=email).exists():
             return render(request, 'authentication/register.html', {'error': 'Email already exists'})
 
-        # ✅ Create user
-        user = User.objects.create_user(username=username, email=email, password=password)
+        user = User.objects.create_user(username=email, email=email, password=password)
         user.is_active = True
         user.save()
 
-        # ✅ Update user profile
         profile = user.userprofile
         profile.membership_program = 'member'
         profile.save()
 
-        # ✅ Assign to 'member' group
         group, _ = Group.objects.get_or_create(name='member')
         user.groups.add(group)
 
-        # ✅ Send email verification
         send_verification_email(user, request)
-
-        # ✅ Add to Brevo contacts list
         add_user_to_brevo_list(email=email)
 
         return render(request, 'authentication/registration_pending.html', {'email': user.email})

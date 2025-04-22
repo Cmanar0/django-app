@@ -33,4 +33,7 @@ urlpatterns = [
     # Profile Management
     path('profile/', views.profile_update_view, name='profile_update'),
     path('delete-account/', views.delete_account_view, name='delete_account'),
+
+    path('terms/', views.terms_view, name='terms'),
+
 ]
