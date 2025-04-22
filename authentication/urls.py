@@ -29,11 +29,13 @@ urlpatterns = [
 
     # Email Verification
     path('verify-email/<uidb64>/<token>/', views.verify_email, name='verify_email'),
+    path('resend-verification/', views.resend_verification_email, name='resend_verification'),
 
     # Profile Management
     path('profile/', views.profile_update_view, name='profile_update'),
     path('delete-account/', views.delete_account_view, name='delete_account'),
 
+    # Static
     path('terms/', views.terms_view, name='terms'),
 
 ]
