@@ -91,46 +91,50 @@ def add_user_to_brevo_list(email: str, first_name: str = '', last_name: str = ''
     configuration = Configuration()
     configuration.api_key['api-key'] = os.environ.get('BREVO_API_KEY')
 
-    with ApiClient(configuration) as api_client:
-        api_instance = ContactsApi(api_client)
-        contact = CreateContact(
-            email=email,
-            list_ids=list_ids,
-            attributes={
-                "FIRSTNAME": first_name,
-                "LASTNAME": last_name,
-                "COMPANY": company_name,
-                "PHONE": phone,
-                "MEMBERSHIP": membership_program,
-                "PAYMENT": payment_type
-            },
-            update_enabled=True
-        )
-        try:
-            api_instance.create_contact(contact)
-        except Exception as e:
-            print(f"Error adding user to Brevo list: {e}")
+    api_client = ApiClient(configuration)
+    api_instance = ContactsApi(api_client)
+
+    contact = CreateContact(
+        email=email,
+        list_ids=list_ids,
+        attributes={
+            "FIRSTNAME": first_name,
+            "LASTNAME": last_name,
+            "COMPANY": company_name,
+            "PHONE": phone,
+            "MEMBERSHIP": membership_program,
+            "PAYMENT": payment_type
+        },
+        update_enabled=True
+    )
+
+    try:
+        api_instance.create_contact(contact)
+    except Exception as e:
+        print(f"Error adding user to Brevo list: {e}")
 
 
 def update_user_in_brevo_list(email: str, first_name: str = '', last_name: str = '', company_name: str = '', phone: str = '', membership_program: str = '', payment_type: str = ''):
     configuration = Configuration()
     configuration.api_key['api-key'] = os.environ.get('BREVO_API_KEY')
 
-    with ApiClient(configuration) as api_client:
-        api_instance = ContactsApi(api_client)
-        contact = CreateContact(
-            email=email,
-            attributes={
-                "FIRSTNAME": first_name,
-                "LASTNAME": last_name,
-                "COMPANY": company_name,
-                "PHONE": phone,
-                "MEMBERSHIP": membership_program,
-                "PAYMENT": payment_type
-            },
-            update_enabled=True
-        )
-        try:
-            api_instance.create_contact(contact)
-        except Exception as e:
-            print(f"Error updating Brevo contact: {e}")
+    api_client = ApiClient(configuration)
+    api_instance = ContactsApi(api_client)
+
+    contact = CreateContact(
+        email=email,
+        attributes={
+            "FIRSTNAME": first_name,
+            "LASTNAME": last_name,
+            "COMPANY": company_name,
+            "PHONE": phone,
+            "MEMBERSHIP": membership_program,
+            "PAYMENT": payment_type
+        },
+        update_enabled=True
+    )
+
+    try:
+        api_instance.create_contact(contact)
+    except Exception as e:
+        print(f"Error updating Brevo contact: {e}")
