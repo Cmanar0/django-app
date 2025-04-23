@@ -37,13 +37,143 @@
       width: 100%;
       padding: 0;
     }
+
+    /* Navbar styles */
+    :root {
+      --primary-color: #059669;
+    }
+
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      max-width: 100%;  
+      padding: 1rem 2rem;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .navbar.transparent {
+      background: transparent;
+    }
+
+    .navbar.scrolled {
+      background: white;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar .logo-text {
+      transition: color 0.3s ease;
+    }
+
+    .navbar.transparent .logo-text {
+      color: white;
+    }
+
+    .navbar.scrolled .logo-text {
+      color: var(--primary-color);
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .navbar.transparent .nav-links a {
+      color: white;
+    }
+
+    .navbar.scrolled .nav-links a {
+      color: #1a1a1a;
+    }
+
+    .navbar.scrolled .nav-links a:hover {
+      color: var(--primary-color);
+    }
+
+    /* Hamburger menu */
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      z-index: 100;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 25px;
+      height: 3px;
+      margin: 5px 0;
+      transition: all 0.3s ease;
+    }
+
+    .navbar.transparent .hamburger span {
+      background: white;
+    }
+
+    .navbar.scrolled .hamburger span {
+      background: #1a1a1a;
+    }
+
+    @media (max-width: 768px) {
+      .hamburger {
+        display: block;
+      }
+
+      .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        height: 100vh;
+        width: 100%;
+        background: white;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        transition: right 0.3s ease;
+      }
+
+      .nav-links.active {
+        right: 0;
+      }
+
+      .nav-links a {
+        color: #1a1a1a !important;
+      }
+
+      .hamburger.active span:nth-child(1) {
+        transform: rotate(45deg) translate(8px, 8px);
+      }
+
+      .hamburger.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -7px);
+      }
+    }
   </style>
 </head>
 <body>
   <header>
-    <nav class="navbar">
+    <nav class="navbar transparent">
       <div class="logo">
-        <img src="{% static 'images/logo.png' %}" alt="Logo">
+        <img src="{% static 'images/logo1.png' %}" alt="Logo">
         <span class="logo-text">{% block header %}{% endblock %}</span>
       </div>
       
@@ -78,9 +208,28 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', function() {
+      const navbar = document.querySelector('.navbar');
       const hamburger = document.querySelector('.hamburger');
       const navLinks = document.querySelector('.nav-links');
       
+      // Handle scroll
+      function handleScroll() {
+        if (window.scrollY > 50) {
+          navbar.classList.remove('transparent');
+          navbar.classList.add('scrolled');
+        } else {
+          navbar.classList.add('transparent');
+          navbar.classList.remove('scrolled');
+        }
+      }
+
+      // Initial check
+      handleScroll();
+
+      // Add scroll event listener
+      window.addEventListener('scroll', handleScroll);
+      
+      // Handle mobile menu
       hamburger.addEventListener('click', function() {
         hamburger.classList.toggle('active');
         navLinks.classList.toggle('active');

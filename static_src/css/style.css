@@ -36,15 +36,6 @@ header {
   z-index: 1000;
 }
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-  height: 45px;
-}
 
 .logo {
   display: flex;
@@ -104,7 +95,7 @@ header {
 
 /* Main content adjustment for fixed header */
 main {
-  margin-top: 77px;
+  margin-top: 0;
   min-height: calc(100vh - 175px);
 }
 
