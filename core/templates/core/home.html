@@ -12,6 +12,7 @@
     position: relative;
     padding: 4rem 0;
     overflow: hidden;
+    width: 100%;
   }
   
   .hero-bg {
@@ -22,6 +23,7 @@
     bottom: 0;
     background: linear-gradient(to right, rgba(236, 253, 245, 0.8), rgba(254, 242, 242, 0.8));
     z-index: 0;
+    width: 100%;
   }
   
   .hero-content {
@@ -90,6 +92,7 @@
   /* Section Padding */
   .section-padding {
     padding: 4rem 0;
+    width: 100%;
   }
   
   /* Mission Section */
@@ -169,8 +172,9 @@
   }
   
   /* Values Section */
-  .values-bg {
+  .values-section {
     background-color: #f9fafb;
+    width: 100%;
   }
   
   .section-title {
@@ -312,8 +316,9 @@
   }
   
   /* CTA Section */
-  .cta-bg {
+  .cta-section {
     background-color: #ecfdf5;
+    width: 100%;
   }
   
   .cta-card {
@@ -376,6 +381,12 @@
     height: 6rem;
     color: #059669;
   }
+  /* Content container for centered content */
+  .content-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
 </style>
 {% endblock %}
 
@@ -384,7 +395,7 @@
   <!-- Hero Section -->
   <section class="hero-section">
     <div class="hero-bg"></div>
-    <div class="container">
+    <div class="content-container">
       <div class="hero-content">
         <h1 class="hero-title">Inspiring Growth, Empowering Communities</h1>
         <p class="hero-text">
@@ -400,7 +411,7 @@
 
   <!-- Mission Section -->
   <section class="section-padding">
-    <div class="container">
+    <div class="content-container">
       <div class="mission-grid">
         <div>
           <h2 class="mission-title">Our Mission</h2>
@@ -435,8 +446,8 @@
   </section>
 
   <!-- Values Section -->
-  <section class="section-padding values-bg">
-    <div class="container">
+  <section class="section-padding values-section">
+    <div class="content-container">
       <div class="section-title">
         <h2>Our Values</h2>
         <p>
@@ -522,7 +533,7 @@
 
   <!-- Goals Section -->
   <section class="section-padding">
-    <div class="container">
+    <div class="content-container">
       <div class="section-title">
         <h2>Our Goals</h2>
         <p>
@@ -583,8 +594,8 @@
   </section>
 
   <!-- CTA Section -->
-  <section class="section-padding cta-bg">
-    <div class="container">
+  <section class="section-padding cta-section">
+    <div class="content-container">
       <div class="cta-card">
         <div class="cta-grid">
           <div class="cta-content">
