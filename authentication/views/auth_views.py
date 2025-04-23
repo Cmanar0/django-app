@@ -33,7 +33,7 @@ def login_view(request):
             login(request, user)
             if user.is_superuser or user.is_staff:
                 return redirect('community_hub:home')
-            return redirect('dashboard:home')
+            return redirect('dashboard:dashboard')
         else:
             return render(request, 'authentication/login.html', {'error': 'Invalid username or password'})
 
