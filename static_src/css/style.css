@@ -95,7 +95,7 @@ header {
 
 /* Main content adjustment for fixed header */
 main {
-  margin-top: 0;
+  margin-top: 0 !important;
   min-height: calc(100vh - 175px);
 }
 

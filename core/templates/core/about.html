@@ -1,0 +1,570 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}About - MaishaGala{% endblock %}
+
+{% block header %}MaishaGala{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Section Wrapper */
+  .section-wrapper {
+    width: 100%;
+    padding: 4rem 0;
+  }
+
+  /* Content Container */
+  .content-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  /* Section Title */
+  .section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+
+  /* About Header */
+  .about-header {
+    background-color: #f8fafc;
+    padding: 6rem 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .about-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-header p {
+    font-size: 1.25rem;
+    color: #4a5568;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  /* Story Section */
+  .story-bg {
+    background-color: #f8fafc;
+    width: 100%;
+  }
+
+  .story-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .story-content {
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+    }
+  }
+
+  .story-text {
+    font-size: 1.125rem;
+    line-height: 1.75;
+    color: #4a5568;
+  }
+
+  .story-text p + p {
+    margin-top: 1.5rem;
+  }
+
+  .story-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Team Section */
+  .team-bg {
+    background-color: white;
+    width: 100%;
+  }
+
+  .team-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 2rem;
+  }
+
+  @media (min-width: 640px) {
+    .team-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .team-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .team-member {
+    background-color: white;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
+  }
+
+  .team-member:hover {
+    transform: translateY(-4px);
+  }
+
+  .member-image {
+    height: 250px;
+    overflow: hidden;
+  }
+
+  .member-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .team-member h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin: 1.5rem 1.5rem 0.5rem;
+  }
+
+  .member-role {
+    font-size: 1rem;
+    color: #4a5568;
+    margin: 0 1.5rem 0.5rem;
+  }
+
+  .member-bio {
+    font-size: 0.875rem;
+    color: #718096;
+    margin: 0 1.5rem 1.5rem;
+    line-height: 1.5;
+  }
+
+  /* Mission Section */
+  .mission-bg {
+    background-color: #f8fafc;
+    width: 100%;
+  }
+
+  .mission-content {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .mission-text {
+    font-size: 1.25rem;
+    line-height: 1.75;
+    color: #4a5568;
+    margin-bottom: 3rem;
+  }
+
+  .mission-points {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .mission-points {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .mission-point {
+    padding: 1.5rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .mission-point h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
+  }
+
+  .mission-point p {
+    font-size: 0.875rem;
+    color: #718096;
+    line-height: 1.5;
+  }
+
+  /* Mission & Vision Section */
+  .values-section {
+    background-color: #f9fafb;
+    width: 100%;
+  }
+
+  .mission-vision-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .mission-vision-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .info-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .icon-circle {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+  }
+
+  .mission-icon {
+    background-color: #d1fae5;
+    color: #059669;
+  }
+
+  .vision-icon {
+    background-color: #dbeafe;
+    color: #3b82f6;
+  }
+
+  /* Partners Section */
+  .partners-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+  }
+
+  @media (min-width: 640px) {
+    .partners-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  .partner-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .partner-card img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* CTA Section */
+  .cta-section {
+    background-color: #ecfdf5;
+    width: 100%;
+  }
+
+  .cta-card {
+    background-color: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+
+  .cta-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 768px) {
+    .cta-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .cta-content {
+    padding: 2rem;
+  }
+
+  @media (min-width: 768px) {
+    .cta-content {
+      padding: 3rem;
+    }
+  }
+
+  .cta-icon {
+    background-color: #d1fae5;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media (min-width: 768px) {
+    .cta-icon {
+      padding: 3rem;
+    }
+  }
+
+  .cta-icon svg {
+    width: 6rem;
+    height: 6rem;
+    color: #059669;
+  }
+
+  /* Button Styles */
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .button-group {
+      flex-direction: row;
+    }
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background-color: #059669;
+    color: white;
+  }
+
+  .btn-primary:hover {
+    opacity: 0.9;
+    text-decoration: none;
+  }
+
+  .btn-secondary {
+    background-color: #f3f4f6;
+    color: #4b5563;
+  }
+
+  .btn-secondary:hover {
+    background-color: #e5e7eb;
+    text-decoration: none;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="space-y-16">
+  <!-- About Header -->
+  <section class="about-header">
+    <div class="content-container">
+      <h1>About MaishaGala</h1>
+      <p>We're on a mission to inspire growth and empower communities through impactful events and meaningful connections.</p>
+    </div>
+  </section>
+
+  <!-- Story Section -->
+  <section class="section-wrapper story-bg">
+    <div class="content-container">
+      <div class="story-section">
+        <h1 class="section-title">Our Story</h1>
+        <div class="story-content">
+          <div class="story-text">
+            <p>Founded with a vision to revolutionize how businesses handle their finances, we've grown from a small startup to a trusted partner for thousands of companies worldwide.</p>
+            <p>Our journey began when we recognized the challenges businesses face in managing their expenses and financial operations. We set out to create a solution that would make financial management simpler, more efficient, and more transparent.</p>
+          </div>
+          <div class="story-image">
+            <img src="{% static 'core/images/about/story.jpg' %}" alt="Our Story">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team Section -->
+  <section class="section-wrapper team-bg">
+    <div class="content-container">
+      <div class="team-section">
+        <h2 class="section-title">Meet Our Team</h2>
+        <div class="team-grid">
+          <div class="team-member">
+            <div class="member-image">
+              <img src="{% static 'core/images/about/team1.jpg' %}" alt="Team Member 1">
+            </div>
+            <h3>John Doe</h3>
+            <p class="member-role">CEO & Founder</p>
+            <p class="member-bio">With over 15 years of experience in fintech, John leads our company's vision and strategy.</p>
+          </div>
+          <div class="team-member">
+            <div class="member-image">
+              <img src="{% static 'core/images/about/team2.jpg' %}" alt="Team Member 2">
+            </div>
+            <h3>Jane Smith</h3>
+            <p class="member-role">CTO</p>
+            <p class="member-bio">Jane brings technical excellence and innovation to our platform development.</p>
+          </div>
+          <div class="team-member">
+            <div class="member-image">
+              <img src="{% static 'core/images/about/team3.jpg' %}" alt="Team Member 3">
+            </div>
+            <h3>Mike Johnson</h3>
+            <p class="member-role">Head of Product</p>
+            <p class="member-bio">Mike ensures our products meet and exceed customer expectations.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission Section -->
+  <section class="section-wrapper mission-bg">
+    <div class="content-container">
+      <div class="mission-section">
+        <h2 class="section-title">Our Mission</h2>
+        <div class="mission-content">
+          <div class="mission-text">
+            <p>We're on a mission to empower businesses with smart financial tools that drive growth and success. Our commitment to innovation, security, and customer satisfaction guides everything we do.</p>
+            <div class="mission-points">
+              <div class="mission-point">
+                <h3>Innovation</h3>
+                <p>Continuously developing cutting-edge solutions</p>
+              </div>
+              <div class="mission-point">
+                <h3>Security</h3>
+                <p>Protecting your data with enterprise-grade security</p>
+              </div>
+              <div class="mission-point">
+                <h3>Support</h3>
+                <p>Providing exceptional customer service</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission & Vision -->
+  <section class="section-wrapper values-section">
+    <div class="content-container">
+      <div class="mission-vision-grid">
+        <div class="info-card">
+          <div class="card-header">
+            <div class="icon-circle mission-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+              </svg>
+            </div>
+            <h2 class="mission-title">Our Mission</h2>
+          </div>
+          <p class="mission-text">
+            To enhance regional development and personal growth by creating impactful events that address the everyday challenges faced by communities.
+          </p>
+          <p class="mission-text">
+            We aim to foster dialogue and solutions around key societal issues, promoting mental health, personal well-being, and community engagement.
+          </p>
+        </div>
+        
+        <div class="info-card">
+          <div class="card-header">
+            <div class="icon-circle vision-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </div>
+            <h2 class="mission-title">Our Vision</h2>
+          </div>
+          <p class="mission-text">
+            To be the leading platform for community engagement and development in Tanzania, creating lasting positive change through meaningful events and connections.
+          </p>
+          <p class="mission-text">
+            We envision a future where communities are empowered to address their challenges, where individuals have the support and resources they need to thrive, and where collaboration drives regional progress.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Partners Section -->
+  <section class="section-wrapper values-section">
+    <div class="content-container">
+      <div class="section-title">
+        <h2>Our Partners</h2>
+        <p>We collaborate with organizations and individuals who share our vision for community development and positive change.</p>
+      </div>
+      
+      <div class="partners-grid">
+        <div class="partner-card">
+          <img src="{% static 'images/partner1.png' %}" alt="Partner logo">
+        </div>
+        <div class="partner-card">
+          <img src="{% static 'images/partner2.png' %}" alt="Partner logo">
+        </div>
+        <div class="partner-card">
+          <img src="{% static 'images/partner3.png' %}" alt="Partner logo">
+        </div>
+        <div class="partner-card">
+          <img src="{% static 'images/partner4.png' %}" alt="Partner logo">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section-wrapper cta-section">
+    <div class="content-container">
+      <div class="cta-card">
+        <div class="cta-grid">
+          <div class="cta-content">
+            <h2 class="mission-title">Join Our Mission</h2>
+            <p class="mission-text">
+              Whether you're interested in attending our events, partnering with us, or supporting our cause, we'd love to hear from you.
+            </p>
+            <div class="button-group">
+              <a href="#" class="btn btn-primary">Get in Touch</a>
+              <a href="#" class="btn btn-secondary">Become a Member</a>
+            </div>
+          </div>
+          <div class="cta-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+{% endblock %} 

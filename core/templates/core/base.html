@@ -41,6 +41,7 @@
     /* Navbar styles */
     :root {
       --primary-color: #059669;
+      --primary-color-dark: #047857;
     }
 
     .navbar {
@@ -66,6 +67,10 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
+    .navbar.dark {
+      background: var(--primary-color-dark);
+    }
+
     .navbar .logo-text {
       transition: color 0.3s ease;
     }
@@ -76,6 +81,10 @@
 
     .navbar.scrolled .logo-text {
       color: var(--primary-color);
+    }
+
+    .navbar.dark .logo-text {
+      color: white;
     }
 
     .nav-links {
@@ -111,6 +120,15 @@
       background-color: var(--primary-color);
     }
 
+    .navbar.dark .nav-links a {
+      color: white;
+    }
+
+    .navbar.dark .nav-links a:hover {
+      color: var(--primary-color-dark);
+      background-color: rgba(255, 255, 255, 0.9);
+    }
+
     /* Hamburger menu */
     .hamburger {
       display: none;
@@ -135,6 +153,10 @@
 
     .navbar.scrolled .hamburger span {
       background: #1a1a1a;
+    }
+
+    .navbar.dark .hamburger span {
+      background: white;
     }
 
     @media (max-width: 768px) {
@@ -184,9 +206,9 @@
 </head>
 <body>
   <header>
-    <nav class="navbar transparent">
+    <nav class="navbar {% if request.resolver_match.url_name == 'home' %}transparent{% else %}dark{% endif %}">
       <div class="logo">
-        <img src="{% static 'images/logo1.png' %}" alt="Logo">
+        <img src="{% if request.resolver_match.url_name == 'home' %}{% static 'images/logo1.png' %}{% else %}{% static 'images/logo-b.png' %}{% endif %}" alt="Logo">
         <span class="logo-text">{% block header %}{% endblock %}</span>
       </div>
       
@@ -198,7 +220,7 @@
 
       <ul class="nav-links">
         <li><a href="{% url 'core:home' %}">Home</a></li>
-        <li><a href="#">About</a></li>
+        <li><a href="{% url 'core:about' %}">About</a></li>
         <li><a href="#">Services</a></li>
         <li><a href="#">Contact</a></li>
         <li><a href="{% url 'auth:login' %}" >Login</a></li>
@@ -224,6 +246,7 @@
       const navbar = document.querySelector('.navbar');
       const hamburger = document.querySelector('.hamburger');
       const navLinks = document.querySelector('.nav-links');
+      const isHomePage = window.location.pathname === '/' || window.location.pathname === '/home/';
       
       // Handle scroll
       function handleScroll() {
@@ -231,8 +254,10 @@
           navbar.classList.remove('transparent');
           navbar.classList.add('scrolled');
         } else {
-          navbar.classList.add('transparent');
-          navbar.classList.remove('scrolled');
+          if (isHomePage) {
+            navbar.classList.add('transparent');
+            navbar.classList.remove('scrolled');
+          }
         }
       }
 
