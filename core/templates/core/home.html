@@ -1,13 +1,607 @@
 {% extends 'core/base.html' %}
+{% load static %}
 
-{% block title %}Home - My Django Website{% endblock %}
+{% block title %}Home - MaishaGala{% endblock %}
 
-{% block header %}Maisha Gala{% endblock %}
+{% block header %}MaishaGala{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Hero Section */
+  .hero-section {
+    position: relative;
+    padding: 4rem 0;
+    overflow: hidden;
+  }
+  
+  .hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, rgba(236, 253, 245, 0.8), rgba(254, 242, 242, 0.8));
+    z-index: 0;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 48rem;
+    margin: 0 auto;
+    text-align: center;
+  }
+  
+  .hero-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(to right, #059669, #dc2626);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .hero-text {
+    font-size: 1.25rem;
+    color: #4b5563;
+    margin-bottom: 2rem;
+  }
+  
+  .button-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    justify-content: center;
+  }
+  
+  @media (min-width: 640px) {
+    .button-group {
+      flex-direction: row;
+    }
+  }
+  
+  .btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.2s;
+  }
+  
+  .btn-primary {
+    background-color: #059669;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    opacity: 0.9;
+  }
+  
+  .btn-secondary {
+    background-color: #f3f4f6;
+    color: #4b5563;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #e5e7eb;
+  }
+  
+  /* Section Padding */
+  .section-padding {
+    padding: 4rem 0;
+  }
+  
+  /* Mission Section */
+  .mission-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  
+  @media (min-width: 768px) {
+    .mission-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  .mission-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #047857;
+  }
+  
+  .mission-text {
+    font-size: 1.125rem;
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+  }
+  
+  .mission-image {
+    position: relative;
+  }
+  
+  .image-container {
+    aspect-ratio: 4/3;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .image-badge {
+    position: absolute;
+    bottom: -1.5rem;
+    right: -1.5rem;
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .badge-content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .badge-icon {
+    width: 2rem;
+    height: 2rem;
+    color: #059669;
+    margin-right: 0.75rem;
+  }
+  
+  .badge-text {
+    font-weight: 600;
+    color: #111827;
+  }
+  
+  .badge-subtext {
+    font-size: 0.875rem;
+    color: #6b7280;
+  }
+  
+  /* Values Section */
+  .values-bg {
+    background-color: #f9fafb;
+  }
+  
+  .section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  
+  .section-title h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #047857;
+  }
+  
+  .section-title p {
+    font-size: 1.125rem;
+    color: #4b5563;
+    max-width: 48rem;
+    margin: 0 auto;
+  }
+  
+  .values-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .values-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .values-grid {
+      grid-template-columns: 1fr 1fr 1fr;
+    }
+  }
+  
+  .value-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  }
+  
+  .value-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .value-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    color: #059669;
+    margin-right: 0.5rem;
+  }
+  
+  .value-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+  
+  .value-text {
+    color: #4b5563;
+  }
+  
+  /* Goals Section */
+  .goals-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .goals-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  .goal-card {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border-left: 4px solid;
+  }
+  
+  .goal-card-primary {
+    border-color: #059669;
+  }
+  
+  .goal-card-secondary {
+    border-color: #dc2626;
+  }
+  
+  .goal-content {
+    display: flex;
+    align-items: flex-start;
+  }
+  
+  .goal-number {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    flex-shrink: 0;
+    font-weight: 700;
+  }
+  
+  .goal-number-primary {
+    background-color: #d1fae5;
+    color: #047857;
+  }
+  
+  .goal-number-secondary {
+    background-color: #fee2e2;
+    color: #b91c1c;
+  }
+  
+  .goal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .goal-text {
+    color: #4b5563;
+  }
+  
+  /* CTA Section */
+  .cta-bg {
+    background-color: #ecfdf5;
+  }
+  
+  .cta-card {
+    background-color: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  
+  .cta-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+  
+  @media (min-width: 768px) {
+    .cta-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  
+  .cta-content {
+    padding: 2rem;
+  }
+  
+  @media (min-width: 768px) {
+    .cta-content {
+      padding: 3rem;
+    }
+  }
+  
+  .cta-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #047857;
+  }
+  
+  .cta-text {
+    font-size: 1.125rem;
+    color: #4b5563;
+    margin-bottom: 1.5rem;
+  }
+  
+  .cta-icon {
+    background-color: #d1fae5;
+    padding: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  @media (min-width: 768px) {
+    .cta-icon {
+      padding: 3rem;
+    }
+  }
+  
+  .cta-icon svg {
+    width: 6rem;
+    height: 6rem;
+    color: #059669;
+  }
+</style>
+{% endblock %}
 
 {% block content %}
-<div class="welcome-section">
-    <h2>Welcome to Our Site</h2>
-    <p>This is a simple home page template for your Django project.</p>
-    <p>Feel free to customize it according to your needs!</p>
+<div class="space-y-16">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-bg"></div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">Inspiring Growth, Empowering Communities</h1>
+        <p class="hero-text">
+          MaishaGala is dedicated to enhancing regional development and personal growth by creating impactful events that address the everyday challenges faced by communities.
+        </p>
+        <div class="button-group">
+          <a href="#" class="btn btn-primary">Explore Our Events</a>
+          <a href="#" class="btn btn-secondary">Learn More</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission Section -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="mission-grid">
+        <div>
+          <h2 class="mission-title">Our Mission</h2>
+          <p class="mission-text">
+            MaishaGala is dedicated to enhancing regional development and personal growth by creating impactful events that address the everyday challenges faced by communities.
+          </p>
+          <p class="mission-text">
+            Our mission is to foster dialogue and solutions around key societal issues, promoting mental health, personal well-being, and community engagement.
+          </p>
+          <p class="mission-text">
+            Through collaboration with regional leaders, local politicians, and diverse stakeholders, we aim to inspire positive change and create platforms for meaningful interactions that drive progress and empower individuals.
+          </p>
+        </div>
+        <div class="mission-image">
+          <div class="image-container">
+            <img src="{% static 'images/community.jpg' %}" alt="Community gathering">
+          </div>
+          <div class="image-badge">
+            <div class="badge-content">
+              <svg class="badge-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+              <div>
+                <p class="badge-text">Community Focused</p>
+                <p class="badge-subtext">Empowering local communities</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values Section -->
+  <section class="section-padding values-bg">
+    <div class="container">
+      <div class="section-title">
+        <h2>Our Values</h2>
+        <p>
+          Our core values guide everything we do, from event planning to community engagement.
+        </p>
+      </div>
+      
+      <div class="values-grid">
+        <div class="value-card">
+          <div class="value-header">
+            <svg class="value-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <h3 class="value-title">Community Empowerment</h3>
+          </div>
+          <p class="value-text">
+            We are committed to uplifting local communities by addressing relevant issues and fostering personal and collective growth.
+          </p>
+        </div>
+        
+        <div class="value-card">
+          <div class="value-header">
+            <svg class="value-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+            </svg>
+            <h3 class="value-title">Regional Development</h3>
+          </div>
+          <p class="value-text">
+            Our events serve as a catalyst for regional progress, bringing attention to local challenges and opportunities for development.
+          </p>
+        </div>
+        
+        <div class="value-card">
+          <div class="value-header">
+            <svg class="value-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+            </svg>
+            <h3 class="value-title">Collaboration</h3>
+          </div>
+          <p class="value-text">
+            We actively engage with local leaders, politicians, and organizations to build partnerships that support and amplify our impact.
+          </p>
+        </div>
+        
+        <div class="value-card">
+          <div class="value-header">
+            <svg class="value-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+            </svg>
+            <h3 class="value-title">Innovation</h3>
+          </div>
+          <p class="value-text">
+            We strive to offer fresh and creative solutions to societal problems, enhancing the quality of everyday life for our attendees.
+          </p>
+        </div>
+        
+        <div class="value-card">
+          <div class="value-header">
+            <svg class="value-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+            </svg>
+            <h3 class="value-title">Inspiration</h3>
+          </div>
+          <p class="value-text">
+            We aim to inspire change through our events, motivating individuals and communities to pursue personal and societal advancement.
+          </p>
+        </div>
+        
+        <div class="value-card">
+          <div class="value-header">
+            <svg class="value-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h3 class="value-title">National Impact</h3>
+          </div>
+          <p class="value-text">
+            We're expanding our footprint across Tanzania, building our reputation to influence positive societal changes on a national scale.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Goals Section -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="section-title">
+        <h2>Our Goals</h2>
+        <p>
+          MaishaGala aims to engage communities through impactful events focused on relevant local issues, attracting a network of influential stakeholders.
+        </p>
+      </div>
+      
+      <div class="goals-grid">
+        <div class="goal-card goal-card-primary">
+          <div class="goal-content">
+            <div class="goal-number goal-number-primary">01</div>
+            <div>
+              <h3 class="goal-title">Strengthen Community Engagement</h3>
+              <p class="goal-text">
+                To significantly increase community participation by organizing inclusive events that cater to diverse groups within the community, fostering a stronger sense of belonging and engagement.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="goal-card goal-card-secondary">
+          <div class="goal-content">
+            <div class="goal-number goal-number-secondary">02</div>
+            <div>
+              <h3 class="goal-title">Cultivate Collaborative Networks</h3>
+              <p class="goal-text">
+                To build a robust network of partnerships with local leaders, businesses, and non-profits, enhancing our collective impact on regional development and community support.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="goal-card goal-card-primary">
+          <div class="goal-content">
+            <div class="goal-number goal-number-primary">03</div>
+            <div>
+              <h3 class="goal-title">Meaningful Dialogues</h3>
+              <p class="goal-text">
+                Organize events that foster active dialogue and collaboration between communities, local leaders, and businesses, ensuring environmental sustainability goes hand-in-hand with community empowerment and development.
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="goal-card goal-card-secondary">
+          <div class="goal-content">
+            <div class="goal-number goal-number-secondary">04</div>
+            <div>
+              <h3 class="goal-title">Scale Impact Nationally</h3>
+              <p class="goal-text">
+                Expand our footprint by hosting events in new cities each year, building our reputation to influence positive societal changes on a national scale.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section-padding cta-bg">
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-grid">
+          <div class="cta-content">
+            <h2 class="cta-title">Ready to Make a Difference?</h2>
+            <p class="cta-text">
+              Join us in our mission to inspire growth and empower communities across Tanzania. Whether you're interested in attending our events, partnering with us, or supporting our cause, we'd love to hear from you.
+            </p>
+            <a href="#" class="btn btn-primary">Get in Touch</a>
+          </div>
+          <div class="cta-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </div>
 {% endblock %}
