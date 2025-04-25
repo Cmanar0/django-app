@@ -197,6 +197,9 @@
                             
                             <div class="event-actions">
                                 <a href="{% url 'community_hub:event_detail' event.slug %}" class="event-link">View Details</a>
+                                {% if user.is_authenticated and user.is_staff %}
+                                    <a href="{% url 'community_hub:event_edit' event.slug %}" class="event-link" style="background-color: #ffc107; color: #212529;">Edit Event</a>
+                                {% endif %}
                             </div>
                         </div>
                     </div>

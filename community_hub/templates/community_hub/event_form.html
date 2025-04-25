@@ -82,6 +82,23 @@
         background-color: #5a6268;
     }
     
+    .delete-button {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        font-weight: 500;
+        margin-left: 1rem;
+        text-decoration: none;
+    }
+    
+    .delete-button:hover {
+        background-color: #c82333;
+    }
+    
     /* Custom styling for checkbox fields */
     .checkbox-field {
         display: flex;
@@ -346,6 +363,9 @@
         <div class="form-actions">
             <button type="submit" id="submit-btn" class="submit-button" disabled>{% if form.instance.pk %}Update{% else %}Create{% endif %} Event</button>
             <a href="{% url 'community_hub:events' %}" class="cancel-button">Cancel</a>
+            {% if form.instance.pk %}
+                <a href="{% url 'community_hub:event_delete' form.instance.slug %}" class="delete-button">Delete Event</a>
+            {% endif %}
         </div>
         
         <!-- Hidden fields to store ticket types and membership benefits -->
