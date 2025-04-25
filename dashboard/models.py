@@ -1,9 +1,14 @@
 from django.db import models
-from authentication.models import UserProfile
+from django.contrib.auth.models import User
+from authentication.choices import PAYMENT_TYPE_CHOICES
 
 class Payment(models.Model):
-    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='payments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    payment_type = models.CharField(max_length=20, choices=UserProfile.PAYMENT_TYPE_CHOICES)
-    paid_at = models.DateTimeField(auto_now_add=True)
-    notes = models.TextField(blank=True)
+    payment_type = models.CharField(max_length=20, choices=PAYMENT_TYPE_CHOICES)
+    payment_date = models.DateTimeField(auto_now_add=True)
+    is_successful = models.BooleanField(default=False)
+    transaction_id = models.CharField(max_length=100, blank=True)
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.amount} - {self.payment_date}"

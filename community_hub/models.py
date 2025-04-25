@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from django.urls import reverse
+from authentication.choices import MEMBERSHIP_PROGRAM_CHOICES
 
 # Create your models here.
 
@@ -31,6 +32,7 @@ class Event(models.Model):
     is_public = models.BooleanField(default=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='upcoming')
     image = models.ImageField(upload_to='events/', blank=True, null=True)
+    ticket_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     
     def __str__(self):
         return self.title
@@ -48,6 +50,41 @@ class Event(models.Model):
                 self.slug = f"{original_slug}-{counter}"
                 counter += 1
         super().save(*args, **kwargs)
+
+class TicketType(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='ticket_types')
+    name = models.CharField(max_length=100)
+    description = models.TextField(blank=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    quantity_available = models.PositiveIntegerField(default=0)  # 0 means unlimited
+    is_active = models.BooleanField(default=True)
+    sale_start = models.DateTimeField(null=True, blank=True)
+    sale_end = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.name} - {self.event.title}"
+    
+    class Meta:
+        ordering = ['price']
+    
+    def get_free_tickets_for_membership(self, membership_type):
+        """Get the number of free tickets for a specific membership type"""
+        try:
+            allocation = this.free_ticket_allocations.get(membership_type=membership_type)
+            return allocation.quantity
+        except FreeTicketAllocation.DoesNotExist:
+            return 0
+
+class FreeTicketAllocation(models.Model):
+    ticket_type = models.ForeignKey(TicketType, on_delete=models.CASCADE, related_name='free_ticket_allocations')
+    membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_PROGRAM_CHOICES)
+    quantity = models.PositiveIntegerField(default=0)
+    
+    class Meta:
+        unique_together = ['ticket_type', 'membership_type']
+    
+    def __str__(self):
+        return f"{self.ticket_type.name} - {self.membership_type} - {self.quantity} free"
 
 class EventImage(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name='gallery_images')

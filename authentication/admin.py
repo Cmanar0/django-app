@@ -1,8 +1,15 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-from .models import UserProfile
+from .models import UserProfile, EventRegistration
 from services.email_service import send_verification_email, send_password_reset_email
+
+class EventRegistrationInline(admin.TabularInline):
+    model = EventRegistration
+    extra = 0
+    readonly_fields = ('registration_date', 'ticket_id')
+    fields = ('event', 'num_tickets', 'registration_date', 'ticket_id', 'is_active')
+    can_delete = False
 
 class UserProfileInline(admin.StackedInline):
     model = UserProfile
@@ -11,8 +18,8 @@ class UserProfileInline(admin.StackedInline):
     fk_name = 'user'
 
 class UserAdmin(BaseUserAdmin):
-    inlines = (UserProfileInline,)
-    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active', 'get_email_verified')
+    inlines = (UserProfileInline, EventRegistrationInline)
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active', 'get_email_verified', 'get_event_count')
     list_filter = ('is_staff', 'is_active', 'userprofile__is_email_verified')
     search_fields = ('username', 'email', 'first_name', 'last_name')
     ordering = ('username',)
@@ -21,6 +28,10 @@ class UserAdmin(BaseUserAdmin):
         return obj.userprofile.is_email_verified
     get_email_verified.short_description = 'Email Verified'
     get_email_verified.boolean = True
+    
+    def get_event_count(self, obj):
+        return obj.eventregistration_set.count()
+    get_event_count.short_description = 'Events Registered'
     
     actions = ['resend_verification_email', 'send_password_reset']
     
@@ -39,10 +50,15 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(admin.ModelAdmin):
-    list_display = ['user', 'is_email_verified', 'first_name', 'last_name', 'company_name', 'phone', 'membership_program', 'payment_type', 'created_at']
+    list_display = ['user', 'is_email_verified', 'first_name', 'last_name', 'company_name', 'phone', 'membership_program', 'payment_type', 'created_at', 'get_event_count']
     search_fields = ['user__username', 'user__email', 'first_name', 'last_name', 'company_name']
     list_filter = ['is_email_verified', 'membership_program', 'payment_type']
     readonly_fields = ['created_at']
+    
+    def get_event_count(self, obj):
+        return obj.user.eventregistration_set.count()
+    get_event_count.short_description = 'Events Registered'
+    
     fieldsets = (
         ('User Information', {
             'fields': ('user', 'is_email_verified')
@@ -73,6 +89,14 @@ class UserProfileAdmin(admin.ModelAdmin):
         self.message_user(request, f"{queryset.count()} profiles marked as email verified.")
     verify_emails.short_description = "Mark selected profiles as email verified"
 
-# Unregister the default User admin and register our custom one
+@admin.register(EventRegistration)
+class EventRegistrationAdmin(admin.ModelAdmin):
+    list_display = ['user', 'event', 'num_tickets', 'registration_date', 'ticket_id', 'is_active']
+    list_filter = ['is_active', 'registration_date', 'event']
+    search_fields = ['user__username', 'user__email', 'event__title', 'ticket_id']
+    readonly_fields = ['registration_date', 'ticket_id']
+    ordering = ['-registration_date']
+
+# Re-register UserAdmin
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

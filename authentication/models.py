@@ -1,21 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
-from community_hub.models import Event
+from community_hub.models import Event, TicketType
+from .choices import MEMBERSHIP_PROGRAM_CHOICES, PAYMENT_TYPE_CHOICES
 
 class UserProfile(models.Model):
-    PAYMENT_TYPE_CHOICES = [
-        ('monthly', 'Monthly'),
-        ('quarterly', 'Quarterly'),
-        ('yearly', 'Yearly'),
-    ]
-
-    MEMBERSHIP_PROGRAM_CHOICES = [
-        ('member', 'Member'),
-        ('individual', 'Individual Member'),
-        ('sponsor', 'Sponsor'),
-        ('main_sponsor', 'Main Sponsor'),
-    ]
-
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     is_email_verified = models.BooleanField(default=False)
 
@@ -71,6 +59,7 @@ class UserProfile(models.Model):
 class EventRegistration(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    ticket_type = models.ForeignKey(TicketType, on_delete=models.PROTECT)
     ticket_id = models.CharField(max_length=50, unique=True)
     num_tickets = models.IntegerField(default=1)
     registration_date = models.DateTimeField(auto_now_add=True)
@@ -80,4 +69,4 @@ class EventRegistration(models.Model):
         unique_together = ['user', 'event']
 
     def __str__(self):
-        return f"{self.user.username} - {self.event.title}"
+        return f"{self.user.username} - {self.event.title} - {self.ticket_type.name}"
