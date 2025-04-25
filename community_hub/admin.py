@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Event, EventImage, TicketType, FreeTicketAllocation
+from .models import Event, EventImage, TicketType, FreeTicketAllocation, MembershipTicketBenefit
 from authentication.models import EventRegistration
 
 class EventImageInline(admin.TabularInline):
@@ -21,13 +21,17 @@ class EventRegistrationInline(admin.TabularInline):
     fields = ('user', 'ticket_type', 'num_tickets', 'registration_date', 'ticket_id', 'is_active')
     can_delete = False
 
+class MembershipTicketBenefitInline(admin.TabularInline):
+    model = MembershipTicketBenefit
+    extra = 1
+
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
     list_display = ['title', 'start_date', 'end_date', 'location', 'category', 'status', 'is_public', 'get_registration_count']
     list_filter = ['category', 'status', 'is_public']
     search_fields = ['title', 'description', 'location']
     prepopulated_fields = {'slug': ('title',)}
-    inlines = [EventImageInline, TicketTypeInline, EventRegistrationInline]
+    inlines = [EventImageInline, TicketTypeInline, EventRegistrationInline, MembershipTicketBenefitInline]
     
     def get_registration_count(self, obj):
         return obj.eventregistration_set.count()
@@ -47,18 +51,15 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(TicketType)
 class TicketTypeAdmin(admin.ModelAdmin):
-    list_display = ['name', 'event', 'price', 'quantity_available', 'is_active', 'sale_start', 'sale_end']
-    list_filter = ['is_active', 'event']
+    list_display = ['name', 'event', 'price', 'max_guests']
+    list_filter = ['event']
     search_fields = ['name', 'description', 'event__title']
-    list_editable = ['price', 'is_active']
+    list_editable = ['price', 'max_guests']
     inlines = [FreeTicketAllocationInline]
     
     fieldsets = (
         ('Basic Information', {
-            'fields': ('event', 'name', 'description', 'price')
-        }),
-        ('Availability', {
-            'fields': ('quantity_available', 'is_active', 'sale_start', 'sale_end')
+            'fields': ('event', 'name', 'description', 'price', 'max_guests')
         }),
     )
 
@@ -74,3 +75,9 @@ class EventImageAdmin(admin.ModelAdmin):
     list_display = ('event', 'image')
     list_filter = ('event',)
     search_fields = ('event__title',)
+
+@admin.register(MembershipTicketBenefit)
+class MembershipTicketBenefitAdmin(admin.ModelAdmin):
+    list_display = ('membership_type', 'ticket_type', 'event', 'free_ticket_count')
+    list_filter = ('membership_type', 'event')
+    search_fields = ('ticket_type__name', 'event__title')

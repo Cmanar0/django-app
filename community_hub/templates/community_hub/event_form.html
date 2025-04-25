@@ -61,6 +61,11 @@
         background-color: #0056b3;
     }
     
+    .submit-button:disabled {
+        background-color: #6c757d;
+        cursor: not-allowed;
+    }
+    
     .cancel-button {
         display: inline-block;
         padding: 0.75rem 1.5rem;
@@ -103,6 +108,149 @@
         margin-top: 0.25rem;
         margin-left: 1.5rem;
     }
+    
+    /* Ticket type styles */
+    .ticket-type-form {
+        background-color: #fff;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+    }
+    
+    .ticket-type-list {
+        margin-top: 1.5rem;
+    }
+    
+    .ticket-type-item {
+        background-color: #fff;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+        position: relative;
+    }
+    
+    .ticket-type-item h4 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    .ticket-type-item p {
+        margin-bottom: 0.5rem;
+    }
+    
+    .ticket-type-item .price {
+        font-weight: 600;
+        color: #28a745;
+    }
+    
+    .ticket-type-item .delete-btn {
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 0.25rem;
+        padding: 0.25rem 0.5rem;
+        cursor: pointer;
+    }
+    
+    .ticket-type-item .delete-btn:hover {
+        background-color: #c82333;
+    }
+    
+    .add-ticket-btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        font-weight: 500;
+        margin-top: 1rem;
+    }
+    
+    .add-ticket-btn:hover {
+        background-color: #218838;
+    }
+    
+    /* Membership benefit styles */
+    .membership-benefit-section {
+        margin-top: 2rem;
+        display: none;
+    }
+    
+    .membership-benefit-item {
+        background-color: #fff;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ddd;
+    }
+    
+    .membership-benefit-item h4 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+    
+    .membership-benefit-item .ticket-selection {
+        margin-top: 1rem;
+    }
+    
+    .ticket-allocation {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+    
+    .ticket-allocation select {
+        flex-grow: 1;
+        margin-right: 1rem;
+    }
+    
+    .ticket-allocation input {
+        width: 80px;
+    }
+    
+    .add-allocation-btn {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        border-radius: 0.25rem;
+        cursor: pointer;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+    }
+    
+    .add-allocation-btn:hover {
+        background-color: #5a6268;
+    }
+    
+    .remove-allocation-btn {
+        background-color: #dc3545;
+        color: #fff;
+        border: none;
+        border-radius: 0.25rem;
+        padding: 0.25rem 0.5rem;
+        cursor: pointer;
+        margin-left: 0.5rem;
+    }
+    
+    .remove-allocation-btn:hover {
+        background-color: #c82333;
+    }
+    
+    .validation-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.5rem;
+        display: none;
+    }
 </style>
 {% endblock %}
 
@@ -110,7 +258,7 @@
 <div class="content-container">
     <h1>{% if form.instance.pk %}Edit Event{% else %}Create Event{% endif %}</h1>
     
-    <form method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data" id="event-form">
         {% csrf_token %}
         
         <div class="form-section">
@@ -145,10 +293,366 @@
             {% endfor %}
         </div>
         
+        <div class="form-section">
+            <h3>Ticket Types</h3>
+            <p>Define the different ticket types available for this event.</p>
+            
+            <div id="ticket-type-form" class="ticket-type-form">
+                <div class="form-control">
+                    <label for="ticket-name">Ticket Name</label>
+                    <input type="text" id="ticket-name" class="form-control" required>
+                </div>
+                
+                <div class="form-control">
+                    <label for="ticket-price">Price</label>
+                    <input type="number" id="ticket-price" class="form-control" min="0" step="0.01" required>
+                </div>
+                
+                <div class="form-control">
+                    <label for="ticket-description">Description</label>
+                    <textarea id="ticket-description" class="form-control" rows="3" required></textarea>
+                </div>
+                
+                <div class="form-control">
+                    <label for="ticket-max-guests">Number of Guests</label>
+                    <input type="number" id="ticket-max-guests" class="form-control" min="1" value="1" required>
+                </div>
+                
+                <button type="button" id="add-ticket-btn" class="add-ticket-btn">Add Ticket Type</button>
+            </div>
+            
+            <div id="ticket-type-list" class="ticket-type-list">
+                <!-- Ticket types will be added here dynamically -->
+            </div>
+            
+            <div id="ticket-validation" class="validation-message">
+                Please add at least one ticket type.
+            </div>
+        </div>
+        
+        <div id="membership-benefit-section" class="form-section membership-benefit-section">
+            <h3>Membership Free Ticket Assignment</h3>
+            <p>Assign free tickets to different membership types.</p>
+            
+            <div id="membership-benefits">
+                <!-- Membership benefits will be added here dynamically -->
+            </div>
+            
+            <div id="membership-validation" class="validation-message">
+                Please assign at least one ticket type to each membership type.
+            </div>
+        </div>
+        
         <div class="form-actions">
-            <button type="submit" class="submit-button">{% if form.instance.pk %}Update{% else %}Create{% endif %} Event</button>
+            <button type="submit" id="submit-btn" class="submit-button" disabled>{% if form.instance.pk %}Update{% else %}Create{% endif %} Event</button>
             <a href="{% url 'community_hub:events' %}" class="cancel-button">Cancel</a>
         </div>
+        
+        <!-- Hidden fields to store ticket types and membership benefits -->
+        <input type="hidden" name="ticket_types_data" id="ticket-types-data">
+        <input type="hidden" name="membership_benefits_data" id="membership-benefits-data">
     </form>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // DOM elements
+        const eventForm = document.getElementById('event-form');
+        const ticketNameInput = document.getElementById('ticket-name');
+        const ticketPriceInput = document.getElementById('ticket-price');
+        const ticketDescriptionInput = document.getElementById('ticket-description');
+        const ticketMaxGuestsInput = document.getElementById('ticket-max-guests');
+        const addTicketBtn = document.getElementById('add-ticket-btn');
+        const ticketTypeList = document.getElementById('ticket-type-list');
+        const ticketValidation = document.getElementById('ticket-validation');
+        const membershipBenefitSection = document.getElementById('membership-benefit-section');
+        const membershipBenefits = document.getElementById('membership-benefits');
+        const membershipValidation = document.getElementById('membership-validation');
+        const submitBtn = document.getElementById('submit-btn');
+        const ticketTypesDataInput = document.getElementById('ticket-types-data');
+        const membershipBenefitsDataInput = document.getElementById('membership-benefits-data');
+        
+        // Required form fields
+        const requiredFields = [
+            document.getElementById('id_title'),
+            document.getElementById('id_description'),
+            document.getElementById('id_start_date')
+        ];
+        
+        // Data storage
+        let ticketTypes = [];
+        let membershipBenefitsData = {};
+        
+        // Membership types
+        const membershipTypes = [
+            { value: 'member', label: 'Member' },
+            { value: 'individual_member', label: 'Individual Member' },
+            { value: 'sponsor', label: 'Sponsor' },
+            { value: 'main_sponsor', label: 'Main Sponsor' }
+        ];
+        
+        // Initialize membership benefits
+        membershipTypes.forEach(type => {
+            membershipBenefitsData[type.value] = [];
+        });
+        
+        // Add ticket type
+        addTicketBtn.addEventListener('click', function() {
+            const name = ticketNameInput.value.trim();
+            const price = parseFloat(ticketPriceInput.value);
+            const description = ticketDescriptionInput.value.trim();
+            const maxGuests = parseInt(ticketMaxGuestsInput.value);
+            
+            if (!name || isNaN(price) || !description || isNaN(maxGuests)) {
+                alert('Please fill in all ticket fields correctly.');
+                return;
+            }
+            
+            // Create ticket type object
+            const ticketType = {
+                id: Date.now(), // Unique ID
+                name: name,
+                price: price,
+                description: description,
+                maxGuests: maxGuests
+            };
+            
+            // Add to array
+            ticketTypes.push(ticketType);
+            
+            // Add to UI
+            addTicketTypeToUI(ticketType);
+            
+            // Reset form
+            ticketNameInput.value = '';
+            ticketPriceInput.value = '';
+            ticketDescriptionInput.value = '';
+            ticketMaxGuestsInput.value = '1';
+            
+            // Show membership benefit section if at least one ticket type exists
+            if (ticketTypes.length > 0) {
+                membershipBenefitSection.style.display = 'block';
+                ticketValidation.style.display = 'none';
+                
+                // Initialize membership benefits UI if not already done
+                if (membershipBenefits.children.length === 0) {
+                    initializeMembershipBenefitsUI();
+                }
+            }
+            
+            // Update validation
+            updateValidation();
+        });
+        
+        // Add ticket type to UI
+        function addTicketTypeToUI(ticketType) {
+            const ticketItem = document.createElement('div');
+            ticketItem.className = 'ticket-type-item';
+            ticketItem.dataset.id = ticketType.id;
+            
+            ticketItem.innerHTML = `
+                <h4>${ticketType.name}</h4>
+                <p class="price">$${ticketType.price.toFixed(2)}</p>
+                <p>${ticketType.description}</p>
+                <p>Max Guests: ${ticketType.maxGuests}</p>
+                <button type="button" class="delete-btn" data-id="${ticketType.id}">Delete</button>
+            `;
+            
+            ticketTypeList.appendChild(ticketItem);
+            
+            // Add delete event listener
+            ticketItem.querySelector('.delete-btn').addEventListener('click', function() {
+                const id = parseInt(this.dataset.id);
+                deleteTicketType(id);
+            });
+        }
+        
+        // Delete ticket type
+        function deleteTicketType(id) {
+            // Remove from array
+            ticketTypes = ticketTypes.filter(ticket => ticket.id !== id);
+            
+            // Remove from UI
+            const ticketItem = document.querySelector(`.ticket-type-item[data-id="${id}"]`);
+            if (ticketItem) {
+                ticketItem.remove();
+            }
+            
+            // Hide membership benefit section if no ticket types exist
+            if (ticketTypes.length === 0) {
+                membershipBenefitSection.style.display = 'none';
+                ticketValidation.style.display = 'block';
+            }
+            
+            // Update validation
+            updateValidation();
+        }
+        
+        // Initialize membership benefits UI
+        function initializeMembershipBenefitsUI() {
+            membershipTypes.forEach(type => {
+                const membershipItem = document.createElement('div');
+                membershipItem.className = 'membership-benefit-item';
+                membershipItem.dataset.type = type.value;
+                
+                membershipItem.innerHTML = `
+                    <h4>${type.label}</h4>
+                    <div class="ticket-selection">
+                        <div class="ticket-allocations"></div>
+                        <button type="button" class="add-allocation-btn" data-type="${type.value}">Add Ticket Allocation</button>
+                    </div>
+                `;
+                
+                membershipBenefits.appendChild(membershipItem);
+                
+                // Add event listener for add allocation button
+                membershipItem.querySelector('.add-allocation-btn').addEventListener('click', function() {
+                    const membershipType = this.dataset.type;
+                    addTicketAllocation(membershipType);
+                });
+            });
+        }
+        
+        // Add ticket allocation
+        function addTicketAllocation(membershipType) {
+            const membershipItem = document.querySelector(`.membership-benefit-item[data-type="${membershipType}"]`);
+            const ticketAllocations = membershipItem.querySelector('.ticket-allocations');
+            
+            // Create allocation element
+            const allocation = document.createElement('div');
+            allocation.className = 'ticket-allocation';
+            
+            // Create select element for ticket types
+            const ticketSelect = document.createElement('select');
+            ticketSelect.className = 'ticket-type-select';
+            
+            // Add options for each ticket type
+            ticketTypes.forEach(ticket => {
+                const option = document.createElement('option');
+                option.value = ticket.id;
+                option.textContent = `${ticket.name} ($${ticket.price.toFixed(2)})`;
+                ticketSelect.appendChild(option);
+            });
+            
+            // Create input for free ticket count
+            const ticketCountInput = document.createElement('input');
+            ticketCountInput.type = 'number';
+            ticketCountInput.min = '1';
+            ticketCountInput.value = '1';
+            ticketCountInput.className = 'free-ticket-count';
+            
+            // Create remove button
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'remove-allocation-btn';
+            removeBtn.textContent = 'Remove';
+            
+            // Add event listener for remove button
+            removeBtn.addEventListener('click', function() {
+                allocation.remove();
+                updateMembershipBenefits();
+                updateValidation();
+            });
+            
+            // Add elements to allocation
+            allocation.appendChild(ticketSelect);
+            allocation.appendChild(ticketCountInput);
+            allocation.appendChild(removeBtn);
+            
+            // Add allocation to UI
+            ticketAllocations.appendChild(allocation);
+            
+            // Update membership benefits
+            updateMembershipBenefits();
+            updateValidation();
+        }
+        
+        // Update membership benefits data
+        function updateMembershipBenefits() {
+            membershipTypes.forEach(type => {
+                const membershipItem = document.querySelector(`.membership-benefit-item[data-type="${type.value}"]`);
+                if (!membershipItem) return;
+                
+                const allocations = membershipItem.querySelectorAll('.ticket-allocation');
+                membershipBenefitsData[type.value] = [];
+                
+                allocations.forEach(allocation => {
+                    const ticketId = parseInt(allocation.querySelector('.ticket-type-select').value);
+                    const count = parseInt(allocation.querySelector('.free-ticket-count').value);
+                    
+                    membershipBenefitsData[type.value].push({
+                        ticketId: ticketId,
+                        count: count
+                    });
+                });
+            });
+        }
+        
+        // Update validation
+        function updateValidation() {
+            let isValid = true;
+            
+            // Check required fields
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                }
+            });
+            
+            // Check ticket types
+            if (ticketTypes.length === 0) {
+                ticketValidation.style.display = 'block';
+                isValid = false;
+            } else {
+                ticketValidation.style.display = 'none';
+            }
+            
+            // Check membership benefits
+            if (ticketTypes.length > 0) {
+                let allMembershipsHaveAllocations = true;
+                
+                membershipTypes.forEach(type => {
+                    if (membershipBenefitsData[type.value].length === 0) {
+                        allMembershipsHaveAllocations = false;
+                    }
+                });
+                
+                if (!allMembershipsHaveAllocations) {
+                    membershipValidation.style.display = 'block';
+                    isValid = false;
+                } else {
+                    membershipValidation.style.display = 'none';
+                }
+            }
+            
+            // Enable/disable submit button
+            submitBtn.disabled = !isValid;
+        }
+        
+        // Form submission
+        eventForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Update membership benefits
+            updateMembershipBenefits();
+            
+            // Serialize data
+            ticketTypesDataInput.value = JSON.stringify(ticketTypes);
+            membershipBenefitsDataInput.value = JSON.stringify(membershipBenefitsData);
+            
+            // Submit form
+            this.submit();
+        });
+        
+        // Add event listeners for required fields
+        requiredFields.forEach(field => {
+            field.addEventListener('input', updateValidation);
+        });
+        
+        // Initial validation
+        updateValidation();
+    });
+</script>
 {% endblock %} 

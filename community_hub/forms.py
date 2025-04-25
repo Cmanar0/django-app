@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import inlineformset_factory
-from .models import Event, TicketType, FreeTicketAllocation
+from .models import Event, TicketType, FreeTicketAllocation, MembershipTicketBenefit
 from authentication.choices import MEMBERSHIP_PROGRAM_CHOICES
 
 class EventForm(forms.ModelForm):
@@ -17,11 +17,8 @@ class EventForm(forms.ModelForm):
 class TicketTypeForm(forms.ModelForm):
     class Meta:
         model = TicketType
-        fields = ['name', 'description', 'price', 'quantity_available', 
-                 'is_active', 'sale_start', 'sale_end']
+        fields = ['name', 'description', 'price', 'max_guests']
         widgets = {
-            'sale_start': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
-            'sale_end': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
             'description': forms.Textarea(attrs={'rows': 2}),
         }
 
@@ -36,11 +33,9 @@ class FreeTicketAllocationForm(forms.ModelForm):
 # Create formsets
 TicketTypeFormSet = inlineformset_factory(
     Event, TicketType,
-    form=TicketTypeForm,
+    fields=('name', 'price', 'description', 'max_guests'),
     extra=1,
-    can_delete=True,
-    min_num=1,
-    validate_min=True
+    can_delete=True
 )
 
 FreeTicketAllocationFormSet = inlineformset_factory(
@@ -49,4 +44,12 @@ FreeTicketAllocationFormSet = inlineformset_factory(
     extra=len(MEMBERSHIP_PROGRAM_CHOICES),
     can_delete=False,
     min_num=0
+)
+
+MembershipTicketBenefitFormSet = inlineformset_factory(
+    Event,
+    MembershipTicketBenefit,
+    fields=('membership_type', 'ticket_type', 'free_ticket_count'),
+    extra=1,
+    can_delete=True
 ) 

@@ -4,7 +4,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models import Event, EventImage, TicketType, FreeTicketAllocation
-from .forms import EventForm, TicketTypeFormSet, FreeTicketAllocationFormSet
+from .forms import EventForm, TicketTypeFormSet, MembershipTicketBenefitFormSet
 from authentication.models import EventRegistration
 from django.utils import timezone
 from django.contrib import messages
@@ -38,9 +38,39 @@ class EventCreateView(LoginRequiredMixin, CreateView):
     template_name = 'community_hub/event_form.html'
     success_url = reverse_lazy('community_hub:events')
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['ticket_type_formset'] = TicketTypeFormSet(
+                self.request.POST,
+                prefix='ticket_types'
+            )
+            context['membership_benefit_formset'] = MembershipTicketBenefitFormSet(
+                self.request.POST,
+                prefix='membership_benefits'
+            )
+        else:
+            context['ticket_type_formset'] = TicketTypeFormSet(prefix='ticket_types')
+            context['membership_benefit_formset'] = MembershipTicketBenefitFormSet(prefix='membership_benefits')
+        return context
+    
     def form_valid(self, form):
-        messages.success(self.request, 'Event created successfully!')
-        return super().form_valid(form)
+        context = self.get_context_data()
+        ticket_type_formset = context['ticket_type_formset']
+        membership_benefit_formset = context['membership_benefit_formset']
+        
+        if ticket_type_formset.is_valid() and membership_benefit_formset.is_valid():
+            self.object = form.save()
+            ticket_type_formset.instance = self.object
+            ticket_type_formset.save()
+            
+            membership_benefit_formset.instance = self.object
+            membership_benefit_formset.save()
+            
+            messages.success(self.request, 'Event created successfully!')
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 class EventUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Event
@@ -52,9 +82,47 @@ class EventUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         # Allow staff users to edit any event
         return self.request.user.is_staff
     
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['ticket_type_formset'] = TicketTypeFormSet(
+                self.request.POST,
+                instance=self.object,
+                prefix='ticket_types'
+            )
+            context['membership_benefit_formset'] = MembershipTicketBenefitFormSet(
+                self.request.POST,
+                instance=self.object,
+                prefix='membership_benefits'
+            )
+        else:
+            context['ticket_type_formset'] = TicketTypeFormSet(
+                instance=self.object,
+                prefix='ticket_types'
+            )
+            context['membership_benefit_formset'] = MembershipTicketBenefitFormSet(
+                instance=self.object,
+                prefix='membership_benefits'
+            )
+        return context
+    
     def form_valid(self, form):
-        messages.success(self.request, 'Event updated successfully!')
-        return super().form_valid(form)
+        context = self.get_context_data()
+        ticket_type_formset = context['ticket_type_formset']
+        membership_benefit_formset = context['membership_benefit_formset']
+        
+        if ticket_type_formset.is_valid() and membership_benefit_formset.is_valid():
+            self.object = form.save()
+            ticket_type_formset.instance = self.object
+            ticket_type_formset.save()
+            
+            membership_benefit_formset.instance = self.object
+            membership_benefit_formset.save()
+            
+            messages.success(self.request, 'Event updated successfully!')
+            return super().form_valid(form)
+        else:
+            return self.form_invalid(form)
 
 class EventDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Event
