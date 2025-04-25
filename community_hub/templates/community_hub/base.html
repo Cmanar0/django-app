@@ -302,13 +302,13 @@
                     <img src="{% static 'images/logo1.png' %}" alt="Logo">
                 </div>
             </li>
-            <li><a href="{% url 'dashboard:home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+            <li><a href="{% url 'dashboard:dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
                 <i class="fas fa-home"></i> <span>Dashboard</span>
             </a></li>
-            <li><a href="#" class="{% if request.resolver_match.url_name == 'account' %}active{% endif %}">
+            <li><a href="{% url 'dashboard:account' %}" class="{% if request.resolver_match.url_name == 'account' %}active{% endif %}">
                 <i class="fas fa-user"></i> <span>Account</span>
             </a></li>
-            <li><a href="#" class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}">
+            <li><a href="{% url 'community_hub:events' %}" class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}">
                 <i class="fas fa-calendar"></i> <span>Events</span>
             </a></li>
         </ul>

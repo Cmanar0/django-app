@@ -1,0 +1,222 @@
+{% extends 'community_hub/base.html' %}
+{% load static %}
+
+{% block title %}{{ event.title }} - Community Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .event-detail-container {
+        padding: 2rem 0;
+    }
+    
+    .event-header {
+        margin-bottom: 2rem;
+    }
+    
+    .event-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+    
+    .event-meta {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1.5rem;
+        color: #666;
+    }
+    
+    .event-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    
+    .event-image {
+        width: 100%;
+        max-height: 500px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+    
+    .event-content {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+    
+    .event-description {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #444;
+    }
+    
+    .event-sidebar {
+        background: #f8f9fa;
+        padding: 1.5rem;
+        border-radius: 8px;
+    }
+    
+    .sidebar-section {
+        margin-bottom: 1.5rem;
+    }
+    
+    .sidebar-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #333;
+    }
+    
+    .event-category {
+        display: inline-block;
+        background: #e9ecef;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        color: #495057;
+        font-size: 0.9rem;
+    }
+    
+    .event-location {
+        margin-bottom: 1rem;
+    }
+    
+    .location-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    
+    .location-address {
+        color: #666;
+    }
+    
+    .event-actions {
+        margin-top: 2rem;
+    }
+    
+    .action-btn {
+        display: block;
+        width: 100%;
+        padding: 0.75rem;
+        text-align: center;
+        border-radius: 5px;
+        margin-bottom: 1rem;
+        text-decoration: none;
+        transition: background 0.2s;
+    }
+    
+    .btn-primary {
+        background: #007bff;
+        color: white;
+    }
+    
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+    
+    .btn-outline {
+        background: transparent;
+        border: 2px solid #007bff;
+        color: #007bff;
+    }
+    
+    .btn-outline:hover {
+        background: #f8f9fa;
+    }
+    
+    @media (max-width: 768px) {
+        .event-content {
+            grid-template-columns: 1fr;
+        }
+        
+        .event-meta {
+            flex-direction: column;
+            gap: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="section-wrapper">
+    <div class="content-container">
+        <div class="event-detail-container">
+            <div class="event-header">
+                <h1 class="event-title">{{ event.title }}</h1>
+                <div class="event-meta">
+                    <div class="event-meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>
+                            {{ event.start_date|date:"F j, Y" }}
+                            {% if event.end_date %}
+                            - {{ event.end_date|date:"F j, Y" }}
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="event-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>{{ event.location }}</span>
+                    </div>
+                    <div class="event-meta-item">
+                        <i class="fas fa-tag"></i>
+                        <span>{{ event.get_category_display }}</span>
+                    </div>
+                </div>
+            </div>
+            
+            {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image">
+            {% endif %}
+            
+            <div class="event-content">
+                <div class="event-main">
+                    <div class="event-description">
+                        {{ event.description|linebreaks }}
+                    </div>
+                </div>
+                
+                <div class="event-sidebar">
+                    <div class="sidebar-section">
+                        <h3 class="sidebar-title">Event Details</h3>
+                        <div class="event-category">{{ event.get_category_display }}</div>
+                        
+                        <div class="event-location">
+                            <div class="location-title">Location</div>
+                            <div class="location-address">{{ event.location }}</div>
+                        </div>
+                        
+                        <div class="event-dates">
+                            <div class="location-title">Date & Time</div>
+                            <div class="location-address">
+                                {{ event.start_date|date:"F j, Y" }}
+                                {% if event.end_date %}
+                                <br>to<br>
+                                {{ event.end_date|date:"F j, Y" }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-actions">
+                        {% if user.is_authenticated %}
+                            {% if user in event.attendees.all %}
+                            <a href="#" class="action-btn btn-outline">Cancel Registration</a>
+                            {% else %}
+                            <a href="#" class="action-btn btn-primary">Register for Event</a>
+                            {% endif %}
+                        {% else %}
+                        <a href="{% url 'authentication:login' %}" class="action-btn btn-primary">Login to Register</a>
+                        {% endif %}
+                        
+                        {% if user.is_staff %}
+                        <a href="#" class="action-btn btn-outline">Edit Event</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

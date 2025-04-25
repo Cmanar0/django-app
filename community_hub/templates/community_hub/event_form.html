@@ -1,0 +1,252 @@
+{% extends 'community_hub/base.html' %}
+{% load static %}
+
+{% block title %}{% if event %}Edit Event{% else %}Create New Event{% endif %} - Community Hub{% endblock %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem 0;
+    }
+    
+    .form-header {
+        margin-bottom: 2rem;
+    }
+    
+    .form-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+    
+    .form-description {
+        color: #666;
+        margin-bottom: 2rem;
+    }
+    
+    .event-form {
+        background: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    
+    .form-label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+    
+    textarea.form-control {
+        min-height: 150px;
+        resize: vertical;
+    }
+    
+    .form-text {
+        font-size: 0.875rem;
+        color: #666;
+        margin-top: 0.25rem;
+    }
+    
+    .form-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+    
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    
+    .btn-primary {
+        background: #007bff;
+        color: white;
+        border: none;
+    }
+    
+    .btn-primary:hover {
+        background: #0056b3;
+    }
+    
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        border: none;
+    }
+    
+    .btn-secondary:hover {
+        background: #545b62;
+    }
+    
+    .error-message {
+        color: #dc3545;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+    
+    @media (max-width: 768px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-actions {
+            flex-direction: column;
+        }
+        
+        .btn {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="section-wrapper">
+    <div class="content-container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1 class="form-title">{% if event %}Edit Event{% else %}Create New Event{% endif %}</h1>
+                <p class="form-description">
+                    {% if event %}
+                    Update the details of your event below.
+                    {% else %}
+                    Fill in the details below to create a new event.
+                    {% endif %}
+                </p>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data" class="event-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_title" class="form-label">Event Title</label>
+                    <input type="text" name="title" id="id_title" class="form-control" value="{{ form.title.value|default:'' }}" required>
+                    {% if form.title.errors %}
+                    <div class="error-message">{{ form.title.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_start_date" class="form-label">Start Date</label>
+                        <input type="datetime-local" name="start_date" id="id_start_date" class="form-control" value="{{ form.start_date.value|date:'Y-m-d\TH:i'|default:'' }}" required>
+                        {% if form.start_date.errors %}
+                        <div class="error-message">{{ form.start_date.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_end_date" class="form-label">End Date</label>
+                        <input type="datetime-local" name="end_date" id="id_end_date" class="form-control" value="{{ form.end_date.value|date:'Y-m-d\TH:i'|default:'' }}">
+                        {% if form.end_date.errors %}
+                        <div class="error-message">{{ form.end_date.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_location" class="form-label">Location</label>
+                    <input type="text" name="location" id="id_location" class="form-control" value="{{ form.location.value|default:'' }}" required>
+                    {% if form.location.errors %}
+                    <div class="error-message">{{ form.location.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_category" class="form-label">Category</label>
+                    <select name="category" id="id_category" class="form-control" required>
+                        {% for value, label in form.fields.category.choices %}
+                        <option value="{{ value }}" {% if form.category.value == value %}selected{% endif %}>{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                    {% if form.category.errors %}
+                    <div class="error-message">{{ form.category.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_description" class="form-label">Description</label>
+                    <textarea name="description" id="id_description" class="form-control" required>{{ form.description.value|default:'' }}</textarea>
+                    {% if form.description.errors %}
+                    <div class="error-message">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_image" class="form-label">Event Image</label>
+                    <input type="file" name="image" id="id_image" class="form-control" accept="image/*">
+                    {% if form.image.errors %}
+                    <div class="error-message">{{ form.image.errors.0 }}</div>
+                    {% endif %}
+                    {% if event.image %}
+                    <div class="form-text">Current image: {{ event.image.name }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="id_is_public" class="form-label">Public Event</label>
+                        <div class="form-check">
+                            <input type="checkbox" name="is_public" id="id_is_public" class="form-check-input" {% if form.is_public.value %}checked{% endif %}>
+                            <label class="form-check-label" for="id_is_public">Make this event visible to all users</label>
+                        </div>
+                        {% if form.is_public.errors %}
+                        <div class="error-message">{{ form.is_public.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="id_status" class="form-label">Event Status</label>
+                        <select name="status" id="id_status" class="form-control" required>
+                            {% for value, label in form.fields.status.choices %}
+                            <option value="{{ value }}" {% if form.status.value == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        {% if form.status.errors %}
+                        <div class="error-message">{{ form.status.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">{% if event %}Save Changes{% else %}Create Event{% endif %}</button>
+                    <a href="{% url 'community_hub:events' %}" class="btn btn-secondary">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %} 
