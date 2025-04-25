@@ -25,13 +25,13 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            if not user.userprofile.is_email_verified and not user.is_superuser:
+            if not user.userprofile.is_email_verified and not user.is_staff:
                 return render(request, 'authentication/login.html', {
                     'error': 'Please verify your email before logging in.'
                 })
 
             login(request, user)
-            if user.is_superuser or user.is_staff:
+            if user.is_staff:
                 return redirect('community_hub:home')
             return redirect('dashboard:dashboard')
         else:
