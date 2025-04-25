@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from community_hub.models import Event
 
 class UserProfile(models.Model):
     PAYMENT_TYPE_CHOICES = [
@@ -44,6 +45,9 @@ class UserProfile(models.Model):
         max_length=20, choices=PAYMENT_TYPE_CHOICES, blank=True
     )
 
+    # Tickets
+    purchased_tickets = models.JSONField(default=dict, blank=True)
+
     # Metadata
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -51,5 +55,29 @@ class UserProfile(models.Model):
     # - PaymentHistory: foreign key or M2M to Payment model (not yet implemented)
     # - MissingPayments: could be calculated or stored separately if needed
 
+    def get_free_tickets(self):
+        """Returns the number of free tickets based on membership type"""
+        free_tickets = {
+            'member': 0,
+            'individual': 1,
+            'sponsor': 2,
+            'main_sponsor': 4
+        }
+        return free_tickets.get(self.membership_program, 0)
+
     def __str__(self):
         return self.user.username
+
+class EventRegistration(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    ticket_id = models.CharField(max_length=50, unique=True)
+    num_tickets = models.IntegerField(default=1)
+    registration_date = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ['user', 'event']
+
+    def __str__(self):
+        return f"{self.user.username} - {self.event.title}"

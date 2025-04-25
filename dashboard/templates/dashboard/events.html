@@ -1,0 +1,151 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}Events - Dashboard{% endblock %}
+
+{% block extra_css %}
+<style>
+    .events-container {
+        padding: 2rem;
+    }
+
+    .events-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .event-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.2s;
+    }
+
+    .event-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .event-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .event-content {
+        padding: 1.5rem;
+    }
+
+    .event-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .event-date {
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .event-description {
+        color: #444;
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    .event-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+
+    .event-location {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    .event-category {
+        background: #f0f0f0;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        color: #555;
+    }
+
+    .btn-view-details {
+        display: inline-block;
+        background: #007bff;
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        text-decoration: none;
+        margin-top: 1rem;
+        transition: background 0.2s;
+    }
+
+    .btn-view-details:hover {
+        background: #0056b3;
+        color: white;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    @media (max-width: 768px) {
+        .events-container {
+            padding: 1rem;
+        }
+
+        .events-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="events-container">
+    <h1 class="section-title">Upcoming Events</h1>
+    
+    <div class="events-grid">
+        {% for event in events %}
+        <div class="event-card">
+            {% if event.image %}
+            <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image">
+            {% endif %}
+            <div class="event-content">
+                <h2 class="event-title">{{ event.title }}</h2>
+                <div class="event-date">
+                    {{ event.start_date|date:"F j, Y" }}
+                    {% if event.end_date %}
+                    - {{ event.end_date|date:"F j, Y" }}
+                    {% endif %}
+                </div>
+                <p class="event-description">{{ event.description|truncatewords:30 }}</p>
+                <div class="event-meta">
+                    <span class="event-location">{{ event.location }}</span>
+                    <span class="event-category">{{ event.get_category_display }}</span>
+                </div>
+                <a href="{% url 'dashboard:event_detail' event.slug %}" class="btn-view-details">View Details</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>No events available at the moment.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

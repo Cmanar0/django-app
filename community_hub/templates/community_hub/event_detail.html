@@ -336,6 +336,18 @@
                         <a href="{% url 'community_hub:events' %}" class="action-btn btn-outline">
                             <i class="fas fa-arrow-left"></i> Back to Events
                         </a>
+                        {% if user.is_authenticated %}
+                            {% if user in event.registered_users.all %}
+                                <form method="post" action="{% url 'event_unregister' event.slug %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Cancel Registration</button>
+                                </form>
+                            {% else %}
+                                <a href="{% url 'dashboard:ticket_purchase' event.slug %}" class="btn btn-primary">Purchase Tickets</a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'login' %}" class="btn btn-primary">Login to Purchase Tickets</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

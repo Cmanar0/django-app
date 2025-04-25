@@ -1,9 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models import Event, EventImage
+from authentication.models import EventRegistration
+from django.utils import timezone
+from django.contrib import messages
+from django.urls import reverse
+from django.http import HttpResponseRedirect
+import uuid
 
 @login_required
 def admin_home(request):
@@ -92,3 +98,16 @@ class EventUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         print(f"DEBUG: Event slug: {event.slug}")
         
         return super().form_valid(form)
+
+class EventDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Event
+    success_url = reverse_lazy('community_hub:events')
+    
+    def test_func(self):
+        # Only staff users can delete events
+        return self.request.user.is_staff
+    
+    def get_object(self, queryset=None):
+        # Get the event by slug instead of pk
+        slug = self.kwargs.get('slug')
+        return get_object_or_404(Event, slug=slug)

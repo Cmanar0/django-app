@@ -308,7 +308,7 @@
             <li><a href="{% url 'dashboard:account' %}" class="{% if request.resolver_match.url_name == 'account' %}active{% endif %}">
                 <i class="fas fa-user"></i> <span>Account</span>
             </a></li>
-            <li><a href="#" class="{% if request.resolver_match.url_name == 'events' %}active{% endif %}">
+            <li><a href="{% url 'dashboard:events' %}" class="{% if request.resolver_match.url_name == 'events' or request.resolver_match.url_name == 'event_detail' %}active{% endif %}">
                 <i class="fas fa-calendar"></i> <span>Events</span>
             </a></li>
         </ul>

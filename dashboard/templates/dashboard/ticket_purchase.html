@@ -1,0 +1,201 @@
+{% extends 'dashboard/base.html' %}
+
+{% block title %}Purchase Tickets - {{ event.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .ticket-purchase-wrapper {
+        padding: 4rem 0;
+        background-color: #f8f9fa;
+    }
+
+    .ticket-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 2rem;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .event-summary {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .event-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .event-details {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .membership-benefits {
+        background: #e9ecef;
+        padding: 1.5rem;
+        border-radius: 6px;
+        margin-bottom: 2rem;
+    }
+
+    .benefits-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+    }
+
+    .benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .benefits-list li {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .benefits-list li i {
+        color: #28a745;
+        margin-right: 0.5rem;
+    }
+
+    .ticket-form {
+        margin-top: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+    }
+
+    .ticket-count {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .ticket-count input {
+        width: 80px;
+        text-align: center;
+    }
+
+    .ticket-price {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #28a745;
+    }
+
+    .total-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #28a745;
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .btn-purchase {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .ticket-container {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="ticket-purchase-wrapper">
+    <div class="ticket-container">
+        <div class="event-summary">
+            <h1 class="event-title">{{ event.title }}</h1>
+            <div class="event-details">
+                <p><i class="fas fa-calendar"></i> {{ event.start_date|date:"F j, Y" }}</p>
+                <p><i class="fas fa-map-marker-alt"></i> {{ event.location }}</p>
+            </div>
+        </div>
+
+        <div class="membership-benefits">
+            <h3 class="benefits-title">Your Membership Benefits</h3>
+            <ul class="benefits-list">
+                <li>
+                    <i class="fas fa-check-circle"></i>
+                    You have {{ user_profile.get_free_tickets }} free ticket(s) available
+                </li>
+                <li>
+                    <i class="fas fa-info-circle"></i>
+                    Additional tickets cost ${{ event.ticket_price }} each
+                </li>
+            </ul>
+        </div>
+
+        <form method="post" class="ticket-form">
+            {% csrf_token %}
+            <div class="form-group">
+                <label class="form-label">Number of Tickets</label>
+                <div class="ticket-count">
+                    <button type="button" class="btn btn-outline-secondary" onclick="decrementTickets()">-</button>
+                    <input type="number" name="num_tickets" id="num_tickets" value="1" min="1" max="10" class="form-control">
+                    <button type="button" class="btn btn-outline-secondary" onclick="incrementTickets()">+</button>
+                </div>
+            </div>
+
+            <div class="total-price">
+                Total: $<span id="total-price">0</span>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-purchase">
+                Purchase Tickets
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Get values from Django template variables
+    const ticketPrice = parseFloat("{{ event.ticket_price }}");
+    const freeTickets = parseInt("{{ user_profile.get_free_tickets }}");
+    
+    function updateTotalPrice() {
+        const numTickets = parseInt(document.getElementById('num_tickets').value);
+        const paidTickets = Math.max(0, numTickets - freeTickets);
+        const total = paidTickets * ticketPrice;
+        document.getElementById('total-price').textContent = total.toFixed(2);
+    }
+
+    function incrementTickets() {
+        const input = document.getElementById('num_tickets');
+        if (input.value < 10) {
+            input.value = parseInt(input.value) + 1;
+            updateTotalPrice();
+        }
+    }
+
+    function decrementTickets() {
+        const input = document.getElementById('num_tickets');
+        if (input.value > 1) {
+            input.value = parseInt(input.value) - 1;
+            updateTotalPrice();
+        }
+    }
+
+    document.getElementById('num_tickets').addEventListener('change', updateTotalPrice);
+    updateTotalPrice();
+</script>
+{% endblock %} 

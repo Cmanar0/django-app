@@ -1,0 +1,175 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block title %}{{ event.title }} - Event Details{% endblock %}
+
+{% block extra_css %}
+<style>
+    .event-detail {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .event-header {
+        margin-bottom: 2rem;
+    }
+
+    .event-title {
+        font-size: 2.5rem;
+        color: #333;
+        margin-bottom: 1rem;
+    }
+
+    .event-meta {
+        display: flex;
+        gap: 2rem;
+        margin-bottom: 1rem;
+        color: #666;
+    }
+
+    .event-meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .event-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+    }
+
+    .event-description {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        color: #444;
+        margin-bottom: 2rem;
+    }
+
+    .event-actions {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-register {
+        background-color: #4CAF50;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+    }
+
+    .btn-register:hover {
+        background-color: #45a049;
+    }
+
+    .btn-cancel {
+        background-color: #f44336;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: background-color 0.3s;
+    }
+
+    .btn-cancel:hover {
+        background-color: #da190b;
+    }
+
+    .registration-status {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 4px;
+        background-color: #f8f9fa;
+    }
+
+    .registration-status.registered {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+    }
+
+    .registration-status.not-registered {
+        background-color: #ffebee;
+        color: #c62828;
+    }
+
+    @media (max-width: 768px) {
+        .event-meta {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .event-title {
+            font-size: 2rem;
+        }
+
+        .event-image {
+            height: 300px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="event-detail">
+    <div class="event-header">
+        <h1 class="event-title">{{ event.title }}</h1>
+        <div class="event-meta">
+            <div class="event-meta-item">
+                <i class="fas fa-calendar"></i>
+                <span>{{ event.start_date|date:"F j, Y, g:i a" }}</span>
+            </div>
+            <div class="event-meta-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>{{ event.location }}</span>
+            </div>
+            <div class="event-meta-item">
+                <i class="fas fa-tag"></i>
+                <span>{{ event.get_category_display }}</span>
+            </div>
+        </div>
+    </div>
+
+    {% if event.image %}
+        <img src="{{ event.image.url }}" alt="{{ event.title }}" class="event-image">
+    {% endif %}
+
+    <div class="event-description">
+        {{ event.description|linebreaks }}
+    </div>
+
+    {% if user.is_authenticated %}
+        <div class="registration-status {% if is_registered %}registered{% else %}not-registered{% endif %}">
+            {% if is_registered %}
+                <p>You are registered for this event.</p>
+            {% else %}
+                <p>You are not registered for this event.</p>
+            {% endif %}
+        </div>
+
+        <div class="event-actions">
+            {% if is_registered %}
+                <form method="post" action="{% url 'dashboard:event_cancel_registration' event.slug %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-cancel">Cancel Registration</button>
+                </form>
+            {% else %}
+                <a href="{% url 'dashboard:ticket_purchase' event.slug %}" class="btn-register">Purchase Tickets</a>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="registration-status not-registered">
+            <p>Please <a href="{% url 'login' %}">log in</a> to register for this event.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 
